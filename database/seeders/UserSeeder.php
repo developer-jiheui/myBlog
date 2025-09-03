@@ -16,11 +16,11 @@ class UserSeeder extends Seeder
     {
         // Super Admin (USER_TYPE :1)
         $adminId = DB::table('USER')->insertGetId([
-            'EMAIL'        => 'admin@example.com',
+            'EMAIL'        => 'developer.jiheuilee@gmail.com',
             'PW'           => Hash::make('password123'),
             'USER_TYPE'    => 0,
-            'FIRST_NAME'   => 'Super',
-            'LAST_NAME'    => 'Admin',
+            'FIRST_NAME'   => 'Jiheui',
+            'LAST_NAME'    => 'Lee',
             'REGISTER_TYPE'=> 0,
             'REGISTER_DT'  => now(),
             'ADDRESS'      => 'Vancouver, BC',

@@ -10,7 +10,7 @@ class PageController extends Controller
     public function show($name)
     {
         // List of allowed pages (to prevent errors or unwanted access)
-        $pages = ['home', 'bio', 'resume', 'portfolio', 'portfoliofull','blog','login', 'register', 'blogfull','contact'];
+        $pages = ['home', 'bio', 'resume', 'portfolio','experience', 'portfoliofull','blog','login', 'register', 'blogfull','contact'];
         $admin_pages = ['admin'];
         $user_pages = ['profile'];
         $superAdmin = \App\Models\User::find(1);

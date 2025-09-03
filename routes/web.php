@@ -18,7 +18,6 @@ use App\Http\Controllers\CommentController;
 |
 */
 
-//-------JIHEUI
 
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactMessage;
@@ -97,7 +96,6 @@ Route::middleware('auth')->get('/edit/portfolio', function () {
 })->name('edit.blog'); */
 
 
-//VIATRIX ---------------
 
 Route::get('/page/portfolio', function () {
     return view('page.portfolio');
@@ -113,7 +111,6 @@ Route::middleware(['auth'])->patch('/edit/portfolio/update','App\Http\Controller
 Route::middleware(['auth'])->post('/edit/portfolio/create','App\Http\Controllers\PortfolioController@create')->name('edit.portfolio.create');
 Route::middleware(['auth'])->post('/portfolio/like','App\Http\Controllers\PortfolioController@like')->name('page.portfolio.like');
 
-//GEORGE ---------------
 
 Route::get('/edit/blog', function () {
     return view('edit.blog');
