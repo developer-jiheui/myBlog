@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('longtext_in_blog', function (Blueprint $table) {
-            //
+        Schema::table('access_histories', function (Blueprint $table) {
+            $table->foreign(['user_id'], 'fk_hist_user')->references(['id'])->on('users')->onUpdate('NO ACTION')->onDelete('CASCADE');
         });
     }
 
@@ -25,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('longtext_in_blog', function (Blueprint $table) {
-            //
+        Schema::table('access_histories', function (Blueprint $table) {
+            $table->dropForeign('fk_hist_user');
         });
     }
 };

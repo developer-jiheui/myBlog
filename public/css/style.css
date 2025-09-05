@@ -2175,9 +2175,113 @@
 }
 
 .avatar-box img{
-    width: 120px;
-    height: 120px;
+    width: clamp(56px, 10vw, 130px);
+    height: clamp(56px, 10vw, 130px);
     border-radius: 30px;
     object-fit: cover;
+    object-position: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* optional */
 }
+
+
+/* ===== Recent Works (horizontal cards) ===== */
+
+.recent-works { margin-bottom: 30px; }
+
+
+.recent-list {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 15px;
+    margin: 0 -15px;
+    padding: 25px 15px;
+    padding-bottom: 35px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: inline mandatory;
+}
+
+.recent-item {
+    flex: 0 0 clamp(160px, 28vw, 240px); /* responsive width */
+    aspect-ratio: 1 / 1.2;
+    scroll-snap-align: center;
+}
+
+.recent-scroll-wrap {
+    position: relative;
+}
+
+.recent-card {
+    position: relative;
+    display: block;
+    background: var(--border-gradient-onyx);
+    border-radius: 16px;
+    box-shadow: var(--shadow-4);
+    height: 100%;
+    z-index: 1;
+}
+
+.recent-card::before {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    border-radius: inherit;
+    background: var(--eerie-black-1);
+    z-index: -1;
+}
+
+.recent-thumb {
+    aspect-ratio: 1 / 0.7;          /* <-- keeps it square */
+    width: 100%;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.recent-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition-1);
+}
+
+.recent-card:hover .recent-thumb img { transform: scale(1.08); }
+
+.recent-body { padding: 12px; }
+
+.recent-title { margin: 0 0 6px; line-height: 1.3; }
+
+.recent-desc {
+    color: var(--light-gray);
+    font-size: var(--fs-6);
+    font-weight: var(--fw-300);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* left/right arrow buttons */
+.recent-scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    border: 1px solid var(--onyx);
+    background: var(--jet);
+    color: var(--light-gray);
+    cursor: pointer;
+    opacity: 0.9;
+    z-index: 2;
+}
+
+.recent-scroll-btn:hover { opacity: 1; }
+.recent-scroll-btn.left  { left: -6px; }
+.recent-scroll-btn.right { right: -6px; }
+
+/* optional: hide arrows on very small screens where swipe is natural */
+@media (max-width: 480px) {
+    .recent-scroll-btn { display: none; }}

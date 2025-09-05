@@ -1,153 +1,109 @@
 @extends('layouts.main')
 
 @section('content')
-    <article class="experience active" data-page="experience">
-        <header>
-            <h2 class="h2 article-title">Experience</h2>
+    @php
+        // Pull super admin (USER_TYPE = 0 ) and recent content
+        $superAdmin = \App\Models\User::where('USER_TYPE', 0)->first();
+        $latestBlogs = \App\Models\Blog::orderByDesc('CREATED_AT')->limit(3)->get();
+        $recentWorks = \App\Models\Portfolio::orderByDesc('UPDATED_AT')->limit(6)->get();
+    @endphp
+
+    <article class="home active" data-page="home">
+
+        {{-- HERO --}}
+        <header class="hero">
+            <div class="hero-left">
+                <h1 class="h2 article-title" style="margin-bottom:.25rem;">
+                    Hi, I’m {{ $superAdmin->FIRST_NAME ?? 'Jiheui' }} {{ $superAdmin->LAST_NAME ?? 'Lee' }}
+                </h1>
+                <p class="title" style="margin-bottom:1rem;">
+                    {{ $superAdmin->JOB_TITLE ?? 'Full Stack Developer' }}
+                </p>
+                <p style="max-width:52ch;margin-bottom:1.25rem;">
+                    {{ $superAdmin->BIO ?? 'I build fast, modern web apps and elegant UI.' }}
+                </p>
+                <div class="hero-actions" style="display:flex;gap:.6rem;flex-wrap:wrap;">
+                    <a href="{{ route('page.show',['name'=>'portfolio']) }}" class="form-btn login-highlight">View Portfolio</a>
+                    <a href="{{ route('page.show',['name'=>'blog']) }}" class="form-btn">Read Blog</a>
+                    <a href="{{ route('page.show',['name'=>'contact']) }}" class="form-btn">Contact</a>
+                </div>
+            </div>
+
+            <figure class="avatar-box" style="margin-left:auto;">
+                <img
+                    src="{{ asset(($superAdmin && $superAdmin->AVATAR) ? $superAdmin->AVATAR : 'images/my-avatar.png') }}"
+                    alt="Avatar" width="120">
+            </figure>
         </header>
 
-        <section class="timeline">
-            <div class="title-wrapper">
-                <div class="icon-box">
-                    <ion-icon name="book-outline" role="img" class="md hydrated" aria-label="book outline"></ion-icon>
-                </div>
+        <div class="separator" style="margin:1.25rem 0;"></div>
 
-                <h3 class="h3">Work</h3>
+        {{-- LATEST BLOGS --}}
+        <section class="service">
+            <h3 class="h3 service-title">Latest Blogs</h3>
+
+            <ul class="service-list" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;">
+                @forelse ($latestBlogs as $post)
+                    <li class="service-item">
+                        <a href="{{ route('page.blogfull', ['id'=>$post['BLOG_ID']]) }}" class="service-link" style="display:flex;gap:16px;">
+                            <div class="service-icon-box" style="align-self:flex-start;">
+                                <img
+                                    src="{{ asset($post['IMAGE_URL'] ?: 'images/default-blog.jpeg') }}"
+                                    alt="blog thumbnail" width="56" height="56" style="object-fit:cover;border-radius:12px;">
+                            </div>
+                            <div class="service-content-box">
+                                <h4 class="h4 service-item-title" style="margin-bottom:.25rem;">{{ $post['TITLE'] }}</h4>
+                                <p class="blog-meta" style="opacity:.7;margin-bottom:.5rem;">
+                                    {{ \Carbon\Carbon::parse($post['CREATED_AT'])->format('M d, Y') }}
+                                </p>
+                                <p class="service-item-text">
+                                    {{ \Illuminate\Support\Str::limit(strip_tags($post['CONTENTS']), 110) }}
+                                </p>
+                            </div>
+                        </a>
+                    </li>
+                @empty
+                    <li class="service-item"><div class="service-content-box">No posts yet.</div></li>
+                @endforelse
+            </ul>
+
+            <div style="margin-top:12px;">
+                <a href="{{ route('page.show',['name'=>'blog']) }}" class="navbar-link">View all posts →</a>
             </div>
-
-            <ol class="timeline-list">
-                <li class="timeline-item">
-                    <div class="timeline-work-container">
-                            <a href="" target="_blank">
-                                <h4 class="h4 timeline-item-title">Einsoft</h4></a>
-                            <p class="timeline-item-position">Fullstack Web Developer</p>
-                    </div>
-
-                    <span>Dec 2023 — Dec 2024</span>
-
-                    <p class="timeline-text">
-                        Build a website in startup env
-                    </p>
-                </li>
-
-                <li class="timeline-item">
-                    <div class="timeline-work-container">
-                        <a href="https://www.outrider.ai/" target="_blank">
-                            <img src="./assets/images/company/logo-outrider.png" alt="mobile app icon" width="24" style="margin-right: 6px; border-radius: 4px"></a>
-                        <div class="timeline-work-text">
-                            <a href="https://www.outrider.ai/" target="_blank">
-                                <h4 class="h4 timeline-item-title">Outrider</h4></a>
-                            <p class="timeline-item-position">
-                                Software Engineer, Cloud Applications Intern
-                            </p>
-                        </div>
-                    </div>
-
-                    <span>June 2023 — September 2023</span>
-
-                    <p class="timeline-text">
-                        Full-stack internal tool for autonomous vehicle test
-                        operations | Next.js, TypeScript, Node.js, Jest
-                    </p>
-                </li>
-
-                <li class="timeline-item">
-                    <div class="timeline-work-container">
-                        <a href="https://www.brex.com/" target="_blank">
-                            <img src="./assets/images/company/logo-brex.png" alt="mobile app icon" width="24" style="margin-right: 6px; border-radius: 4px"></a>
-                        <div class="timeline-work-text">
-                            <a href="https://www.brex.com/" target="_blank">
-                                <h4 class="h4 timeline-item-title">Brex</h4></a>
-                            <p class="timeline-item-position">
-                                Software Engineer Intern
-                            </p>
-                        </div>
-                    </div>
-
-                    <span>May 2022 — Aug 2022</span>
-
-                    <p class="timeline-text">
-                        Mobile Policy Validation | React Native, TypeScript,
-                        GraphQL<br>
-                        Globalized state property of addresses in internal tool | SQL,
-                        Retool
-                    </p>
-                </li>
-
-                <li class="timeline-item">
-                    <div class="timeline-work-container">
-                        <a href="https://www.ringleplus.com/en/student/landing/home" target="_blank">
-                            <img src="./assets/images/company/logo-ringle.png" alt="mobile app icon" width="24" style="margin-right: 6px; border-radius: 4px"></a>
-                        <div class="timeline-work-text">
-                            <a href="https://www.ringleplus.com/en/student/landing/home" target="_blank">
-                                <h4 class="h4 timeline-item-title">Ringle</h4></a>
-                            <p class="timeline-item-position">
-                                Technical Product Manager Intern
-                            </p>
-                        </div>
-                    </div>
-
-                    <span>Apr 2020 - Mar 2021</span>
-
-                    <p class="timeline-text">
-                        Slackbot metric tracking automation | Ruby, SQLite
-                        <br>Improved user retention with analytics page and UX
-                        enhancements | JavaScript, SQL
-                    </p>
-                </li>
-            </ol>
         </section>
 
-        <section class="timeline">
-            <div class="title-wrapper">
-                <div class="icon-box">
-                    <ion-icon name="book-outline" role="img" class="md hydrated" aria-label="book outline"></ion-icon>
-                </div>
+        <div class="separator" style="margin:1.25rem 0;"></div>
 
-                <h3 class="h3">Education</h3>
+        {{-- RECENT WORKS --}}
+        <section class="service">
+            <h3 class="h3 service-title">Recent Works</h3>
+
+            <ul class="service-list has-scrollbar" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;">
+                @forelse ($recentWorks as $work)
+                    <li class="service-item">
+                        <a href="{{ route('page.portfoliofull', ['id'=>$work['PORTFOLIO_ID']]) }}" class="service-link" style="display:flex;gap:16px;">
+                            <div class="service-icon-box" style="align-self:flex-start;">
+                                <img
+                                    src="{{ asset($work['IMAGE_URL'] ?: 'images/default-icon.svg') }}"
+                                    alt="project" width="56" height="56" style="object-fit:cover;border-radius:12px;">
+                            </div>
+                            <div class="service-content-box">
+                                <h4 class="h4 service-item-title" style="margin-bottom:.25rem;">{{ $work['TITLE'] }}</h4>
+                                <p class="service-item-text">
+                                    {{ \Illuminate\Support\Str::limit($work['DESCRIPTION'] ?? '', 120) }}
+                                </p>
+                            </div>
+                        </a>
+                    </li>
+                @empty
+                    <li class="service-item"><div class="service-content-box">No portfolio items yet.</div></li>
+                @endforelse
+            </ul>
+
+            <div style="margin-top:12px;">
+                <a href="{{ route('page.show',['name'=>'portfolio']) }}" class="navbar-link">See all work →</a>
             </div>
-
-            <ol class="timeline-list">
-                <li class="timeline-item">
-                    <a href="https://www.mtholyoke.edu/" target="_blank">
-                        <h4 class="h4 timeline-item-title-edu">
-                            Mount Holyoke College
-                        </h4></a>
-                    <span>2021 — 2023</span>
-
-                    <p class="timeline-text">
-                        Bachelor of Arts in Computer Science, GPA: 3.86<br>
-                        · Chair of the Website team for
-                        <i>Computer Science Society(CS Student Organization)</i><br>
-                        · Teaching Assistant for <i>Intro to Computing Systems</i> and
-                        <i>Discrete Mathematics</i><br>
-                        · Peer Mentor for <i>Intro to Computer Science</i>
-                    </p>
-                </li>
-
-                <li class="timeline-item">
-                    <a href="https://www.ait-budapest.com/" target="_blank">
-                        <h4 class="h4 timeline-item-title-edu">AIT-Budapest</h4></a>
-                    <span>2022</span>
-
-                    <p class="timeline-text">
-                        Computer Science Study Abroad Program in Budapest, Hungary
-                    </p>
-                </li>
-
-                <li class="timeline-item">
-                    <a href="https://www.dongguk.edu/main" target="_blank">
-                        <h4 class="h4 timeline-item-title-edu">
-                            Dongguk University
-                        </h4></a>
-                    <span>2018 — 2019</span>
-
-                    <p class="timeline-text">
-                        Physics and Semiconductor → Computer Engineering → Transfer to
-                        Mount Holyoke College
-                    </p>
-                </li>
-            </ol>
         </section>
+
     </article>
 @endsection

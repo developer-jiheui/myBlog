@@ -23,11 +23,11 @@ CREATE TABLE USER (
                         USER_TYPE INT,# admin 0, common user 1
                         FIRST_NAME VARCHAR(100),
                         LAST_NAME VARCHAR(100),
-                        REGISTER_TYPE INT, #if we want to add github or google register api
+                        REGISTER_TYPE INT, #for api
                         REGISTER_DT DATETIME,
                         ADDRESS VARCHAR(100),
                         PHONE_NUM VARCHAR(20),
-                        BIO VARCHAR(300),
+                        BIO VARCHAR(1024),
                         JOB_TITLE VARCHAR(100),
                         BIRTHDAY DATE,
                         INSTAGRAM_URL VARCHAR(100),

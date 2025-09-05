@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('PORTFOLIO', function (Blueprint $table) {
-            $table->foreign(['USER_ID'], 'portfolio_ibfk_1')->references(['USER_ID'])->on('USER')->onUpdate('NO ACTION')->onDelete('NO ACTION');
+        Schema::table('portfolio_images', function (Blueprint $table) {
+            $table->foreign(['portfolio_id'], 'fk_portfolio_images_portfolio')->references(['id'])->on('portfolios')->onUpdate('NO ACTION')->onDelete('CASCADE');
         });
     }
 
@@ -25,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('PORTFOLIO', function (Blueprint $table) {
-            $table->dropForeign('portfolio_ibfk_1');
+        Schema::table('portfolio_images', function (Blueprint $table) {
+            $table->dropForeign('fk_portfolio_images_portfolio');
         });
     }
 };

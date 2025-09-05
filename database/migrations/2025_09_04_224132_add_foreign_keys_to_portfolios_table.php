@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('ACCESS_HISTORY', function (Blueprint $table) {
-            $table->foreign(['EMAIL'], 'FK_ACCESS_HISTORY_USER')->references(['EMAIL'])->on('USER')->onUpdate('NO ACTION')->onDelete('CASCADE');
+        Schema::table('portfolios', function (Blueprint $table) {
+            $table->foreign(['user_id'], 'fk_portfolios_user')->references(['id'])->on('users')->onUpdate('NO ACTION')->onDelete('CASCADE');
         });
     }
 
@@ -25,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('ACCESS_HISTORY', function (Blueprint $table) {
-            $table->dropForeign('FK_ACCESS_HISTORY_USER');
+        Schema::table('portfolios', function (Blueprint $table) {
+            $table->dropForeign('fk_portfolios_user');
         });
     }
 };

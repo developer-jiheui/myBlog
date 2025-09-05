@@ -13,10 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('LIKES', function (Blueprint $table) {
-            $table->integer('LIKE_ID', true);
-            $table->integer('PORTFOLIO_ID')->nullable()->index('PORTFOLIO_ID');
-            $table->integer('USER_ID')->nullable()->index('USER_ID');
+        Schema::table('blog_images', function (Blueprint $table) {
+            $table->foreign(['blog_id'], 'fk_blog_images_blog')->references(['id'])->on('blogs')->onUpdate('NO ACTION')->onDelete('CASCADE');
         });
     }
 
@@ -27,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('LIKES');
+        Schema::table('blog_images', function (Blueprint $table) {
+            $table->dropForeign('fk_blog_images_blog');
+        });
     }
 };
