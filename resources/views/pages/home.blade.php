@@ -34,8 +34,7 @@
                 <li class="service-item">
 
                     <div class="service-icon-box">
-                        <img src="./assets/images/icon-design.svg
-                " alt="design icon" width="40">
+                        <img src="{{ asset('images/icon-design.svg') }}" alt="design icon" width="40">
                     </div>
 
                     <div class="service-content-box">
@@ -51,7 +50,7 @@
                 <li class="service-item">
 
                     <div class="service-icon-box">
-                        <img src="./assets/images/icon-dev.svg" alt="Web development icon" width="40">
+                        <img src="{{ asset('images/icon-dev.svg') }}" alt="Web development icon" width="40">
                     </div>
 
                     <div class="service-content-box">
@@ -67,7 +66,7 @@
                 <li class="service-item">
 
                     <div class="service-icon-box">
-                        <img src="./assets/images/icon-app.svg" alt="mobile app icon" width="40">
+                        <img src="{{ asset('images/icon-app.svg') }}" alt="mobile app icon" width="40">
                     </div>
 
                     <div class="service-content-box">
@@ -83,7 +82,7 @@
                 <li class="service-item">
 
                     <div class="service-icon-box">
-                        <img src="./assets/images/icon-photo.svg" alt="camera icon" width="40">
+                        <img src="{{ asset('images/icon-photo.svg') }}" alt="camera icon" width="40">
                     </div>
 
                     <div class="service-content-box">
@@ -115,7 +114,7 @@
                     <div class="content-card" data-testimonials-item>
 
                         <figure class="testimonials-avatar-box">
-                            <img src="./assets/images/avatar-1.png" alt="Daniel lewis" width="60" data-testimonials-avatar>
+                            <img src="{{ asset('images/default-avatar.png') }}" alt="Daniel lewis" width="60" data-testimonials-avatar>
                         </figure>
 
                         <h4 class="h4 testimonials-item-title" data-testimonials-title>Daniel lewis</h4>
@@ -137,7 +136,7 @@
                     <div class="content-card" data-testimonials-item>
 
                         <figure class="testimonials-avatar-box">
-                            <img src="./assets/images/avatar-2.png" alt="Jessica miller" width="60" data-testimonials-avatar>
+                            <img src="{{ asset('images/default-avatar.png') }}" alt="Jessica miller" width="60" data-testimonials-avatar>
                         </figure>
 
                         <h4 class="h4 testimonials-item-title" data-testimonials-title>Jessica miller</h4>
@@ -223,7 +222,7 @@
                         <img src="./assets/images/avatar-1.png" alt="Daniel lewis" width="80" data-modal-img>
                     </figure>
 
-                    <img src="./assets/images/icon-quote.svg" alt="quote icon">
+                    <img src="{{ asset("/images/icon-quote.svg") }}" alt="quote icon">
                 </div>
 
                 <div class="modal-content">
@@ -351,24 +350,5 @@
 
 {{--        </section>--}}
 {{--    </article>--}}
-    @guest
-        {{-- Show login button when user is not logged in --}}
-        <a href="{{ route('page.show', ['name' => 'login']) }}" class="edit-page-button">
-            <ion-icon name="log-in-outline" role="img" aria-label="Login"></ion-icon>
-            Log In
-        </a>
-    @endguest
 
-    @auth
-        {{-- Show profile photo when logged in --}}
-        <a href="{{ route('page.show', ['name' => 'profile']) }}" class="edit-page-button">
-            @if(Auth::user()->AVATAR)
-                <img src="{{ asset(Auth::user()->AVATAR) }}"
-                     alt="Profile"
-                     style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
-            @else
-                <ion-icon name="person-circle-outline" role="img" aria-label="Profile"></ion-icon>
-            @endif
-        </a>
-    @endauth
 @endsection

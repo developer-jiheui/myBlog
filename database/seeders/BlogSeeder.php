@@ -4,42 +4,45 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class BlogSeeder extends Seeder
 {
     public function run(): void
     {
-        // Find super admin (USER_TYPE = 0); fallback to first user if missing
-        $admin  = DB::table('USER')->where('USER_TYPE', 0)->first();
-        $userId = $admin?->USER_ID ?? DB::table('USER')->value('USER_ID');
+        $adminId = DB::table('users')->where('user_type', 0)->value('id');
 
-        $posts = [
-            [
-                'TITLE'     => 'Welcome to my blog',
-                'CONTENTS'  => '<p>Seeded post with <strong>HTML</strong> and a small image.</p><p><img src="/images/portfolio/sample1.jpg" alt="sample" style="max-width:100%"></p>',
-                'IMAGE_URL' => 'images/portfolio/sample1.jpg',
-            ],
-            [
-                'TITLE'     => 'Tips & Tricks',
-                'CONTENTS'  => '<p>Seeders for dev, clean prod, and other notes.</p>',
-                'IMAGE_URL' => 'images/portfolio/sample2.jpg',
-            ],
-            [
-                'TITLE'     => 'Quill + Laravel',
-                'CONTENTS'  => '<p>Quill editor stores HTML; you can embed small images.</p>',
-                'IMAGE_URL' => 'images/portfolio/sample3.jpg',
-            ],
-        ];
+        $b1Id = DB::table('blogs')->insertGetId([
+            'user_id'    => $adminId,
+            'title'      => 'Welcome to my blog',
+            'slug'       => Str::slug('Welcome to my blog'),
+            'contents'   => '<p>Seeded post with <strong>HTML</strong> content and a small image.</p><p><img src="/images/blog/sample-blog-1.jpg" alt="sample" style="max-width:100%"></p>',
+            'image_url'  => '/images/blog/sample-blog-1.jpg',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
-        foreach ($posts as $p) {
-            DB::table('BLOG')->insert([
-                'TITLE'      => $p['TITLE'],
-                'CONTENTS'   => $p['CONTENTS'],
-                'USER_ID'    => $userId,
-                'CREATED_AT' => now(),
-                'UPDATED_AT' => now(),
-                'IMAGE_URL'  => $p['IMAGE_URL'],
-            ]);
-        }
+        $b2Id = DB::table('blogs')->insertGetId([
+            'user_id'    => $adminId,
+            'title'      => 'Building with Laravel 10',
+            'slug'       => Str::slug('Building with Laravel 10'),
+            'contents'   => '<p>Notes on upgrading and structuring a Laravel app.</p>',
+            'image_url'  => '/images/blog/sample-blog-2.jpg',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('blog_images')->insert([
+            [
+                'blog_id' => $b1Id, 'url' => '/images/blog/sample-blog-1.jpg',
+                'alt_text' => 'cover', 'position' => 0, 'is_cover' => 1,
+                'created_at' => now(), 'updated_at' => now(),
+            ],
+            [
+                'blog_id' => $b2Id, 'url' => '/images/blog/sample-blog-2.jpg',
+                'alt_text' => 'cover', 'position' => 0, 'is_cover' => 1,
+                'created_at' => now(), 'updated_at' => now(),
+            ],
+        ]);
     }
 }

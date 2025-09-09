@@ -39,9 +39,8 @@ class Portfolio extends Model
         return DB::table('entity_labels')
             ->where('target_type', 'portfolio')
             ->where('kind', 'category')
-            ->distinct()
-            ->orderBy('name')             // optional: alphabetical
-            ->pluck('name')               // or 'slug' if you prefer machine names
+            ->orderBy('name')
+            ->pluck('name', 'slug')             // or 'slug' if you prefer machine names
             ->toArray();
     }
 

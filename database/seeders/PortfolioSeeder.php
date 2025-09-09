@@ -4,51 +4,85 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class PortfolioSeeder extends Seeder
 {
     public function run(): void
     {
-        // Find super admin (USER_TYPE = 0); fallback to first user if missing
-        $admin = DB::table('USER')->where('USER_TYPE', 0)->first();
-        $userId = $admin?->USER_ID ?? DB::table('USER')->value('USER_ID');
+        $adminId = DB::table('users')->where('user_type', 0)->value('id');
 
-        $items = [
-            [
-                'TITLE'       => 'Personal Portfolio Site',
-                'DESCRIPTION' => 'Laravel-based site with custom Blade theme and Google Places autocomplete.',
-                'CATEGORY'    => 'Web',
-                'PROJECT_URL' => 'https://example.com/portfolio',
-                'IMAGE_URL'   => 'images/portfolio/sample1.jpg',
-            ],
-            [
-                'TITLE'       => 'Blog Engine',
-                'DESCRIPTION' => 'Quill-powered blog editor, base64-to-HTML content with thumbnail extraction.',
-                'CATEGORY'    => 'Web',
-                'PROJECT_URL' => 'https://example.com/blog',
-                'IMAGE_URL'   => 'images/portfolio/sample2.jpg',
-            ],
-            [
-                'TITLE'       => 'API Microservice',
-                'DESCRIPTION' => 'Small REST demo with tests.',
-                'CATEGORY'    => 'Backend',
-                'PROJECT_URL' => 'https://example.com/api',
-                'IMAGE_URL'   => 'images/portfolio/sample3.jpg',
-            ],
-        ];
+        // Portfolios
+        $p1Id = DB::table('portfolios')->insertGetId([
+            'user_id'     => $adminId,
+            'title'       => 'Personal Portfolio (Laravel + Tailwind)',
+            'slug'        => Str::slug('Personal Portfolio Laravel Tailwind'),
+            'description' => 'My portfolio site built with Laravel, Tailwind, and a custom CMS.',
+            'project_url' => 'https://example.com/portfolio',
+            'image_url'   => '/images/portfolio/sample1.jpg',
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ]);
 
-        foreach ($items as $it) {
-            DB::table('PORTFOLIO')->insert([
-                'USER_ID'    => $userId,
-                'TITLE'      => $it['TITLE'],
-                'DESCRIPTION'=> $it['DESCRIPTION'],
-                'CATEGORY'   => $it['CATEGORY'],
-                'PROJECT_URL'=> $it['PROJECT_URL'],
-                'CREATED_AT' => now(),
-                'UPDATED_AT' => now(),
-                'IMAGE_URL'  => $it['IMAGE_URL'],
-                'LIKE_COUNT' => 0,
-            ]);
-        }
+        $p2Id = DB::table('portfolios')->insertGetId([
+            'user_id'     => $adminId,
+            'title'       => 'React Dashboard',
+            'slug'        => Str::slug('React Dashboard'),
+            'description' => 'A responsive admin dashboard built with React.',
+            'project_url' => 'https://example.com/react-dashboard',
+            'image_url'   => '/images/portfolio/sample2.jpg',
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ]);
+        // link techs (assuming TechSeeder ran and these slugs exist)
+        $laravelId  = DB::table('techs')->where('slug', 'laravel')->value('id');
+        $tailwindId = DB::table('techs')->where('slug', 'tailwind')->value('id');
+        $reactId    = DB::table('techs')->where('slug', 'react')->value('id');
+
+        // Images (cover + gallery)
+        DB::table('portfolio_images')->insert([
+            // p1 cover
+            [
+                'portfolio_id' => $p1Id, 'url' => '/images/portfolio/sample1.jpg',
+                'alt_text' => 'Portfolio cover', 'position' => 0, 'is_cover' => 1,
+                'created_at' => now(), 'updated_at' => now(),
+            ],
+            // p1 extra
+            [
+                'portfolio_id' => $p1Id, 'url' => '/images/portfolio/sample1b.jpg',
+                'alt_text' => 'Screenshot', 'position' => 1, 'is_cover' => 0,
+                'created_at' => now(), 'updated_at' => now(),
+            ],
+            // p2 cover
+            [
+                'portfolio_id' => $p2Id, 'url' => '/images/portfolio/sample2.jpg',
+                'alt_text' => 'Dashboard cover', 'position' => 0, 'is_cover' => 1,
+                'created_at' => now(), 'updated_at' => now(),
+            ],
+        ]);
+
+        // Attach techs via pivot
+        $techIds = DB::table('techs')->pluck('id', 'slug'); // ['laravel'=>id, ...]
+        $attach = function ($portfolioId, array $slugs) use ($techIds) {
+            $rows = [];
+            $pos  = 0;
+            foreach ($slugs as $slug) {
+                if (!isset($techIds[$slug])) continue;
+                $rows[] = [
+                    'portfolio_id' => $portfolioId,
+                    'tech_id'      => $techIds[$slug],
+                    'level'        => null,
+                    'version'      => null,
+                    'is_primary'   => $pos === 0 ? 1 : 0,
+                    'sort_order'   => $pos++,
+                    'created_at'   => now(),
+                    'updated_at'   => now(),
+                ];
+            }
+            if ($rows) DB::table('portfolio_tech')->insert($rows);
+        };
+
+        $attach($p1Id, ['laravel', 'tailwind', 'mysql']);
+        $attach($p2Id, ['react', 'tailwind']);
     }
 }

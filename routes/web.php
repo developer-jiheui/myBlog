@@ -59,8 +59,11 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 //USER CRUD
 Route::post('/register', [UserController::class, 'register'])->name('register');
 Route::middleware('auth')->post('/edit/profile', [UserController::class, 'edit_profile'])->name('edit.profile');
-Route::middleware('auth')->post('/update/profile', [UserController::class, 'update'])->name('update.profile');
-
+Route::middleware('auth')->put('/profile', [UserController::class, 'update'])
+    ->name('profile.update');
+//@TODO change the one
+Route::middleware('auth')->put('/profile', [UserController::class, 'update'])
+    ->name('update.profile');
 //ADMIN
 
 Route::middleware(['auth'])->group(function () {

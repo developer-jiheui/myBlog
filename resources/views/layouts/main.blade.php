@@ -29,8 +29,28 @@
         -->
         @yield('content')
 
+
+        @auth
+            <button type="button" class="profile-button" aria-label="Open profile" data-open-profile>
+                @if (Auth::user()->avatar)
+                    <img src="{{ asset(Auth::user()->avatar) }}" alt="avatar" width="80">
+                @else
+                    <img src="{{ asset('images/default-avatar.png') }}" alt="Default avatar" width="80">
+                @endif
+            </button>
+            @include('layouts.profile-modal')
+        @endauth
+
+        @guest
+            <a href="{{ route('page.show', ['name' => 'login']) }}" class="edit-page-button">
+                <ion-icon name="log-in-outline" role="img" aria-label="Login"></ion-icon>
+                Log In
+            </a>
+        @endguest
+
+
     </div>
-    {{--    @include('layouts.edit')--}}
+
 </main>
 
 @include('layouts.footer')

@@ -9,15 +9,15 @@
 
         <div class="sidebar-info">
             <figure class="avatar-box">
-                @if (Auth::user()->AVATAR)
-                    <img src="{{ asset(Auth::user()->AVATAR) }}" alt="Avatar" width="80">
+                @if (Auth::user()->avatar)
+                    <img src="{{ asset(Auth::user()->avatar) }}" alt="avatar" width="80">
                 @else
-                    <img src="{{ asset('images/my-avatar.png') }}" alt="Default Avatar" width="80">
+                    <img src="{{ asset('images/default-avatar.png') }}" alt="Default avatar" width="80">
                 @endif
             </figure>
 
             <div class="info-content">
-                <h1 class="name" title="my-name">{{ Auth::user()->FIRST_NAME }} {{ Auth::user()->LAST_NAME }}</h1>
+                <h1 class="name" title="my-name">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</h1>
             </div>
         </div>
 
@@ -62,7 +62,7 @@
                             id="autocomplete"
                             name="address"
                             class="form-input"
-                            value="{{ old('address', Auth::user()->ADDRESS) }}"
+                            value="{{ old('address', Auth::user()->address) }}"
                             placeholder="Address"
                             autocomplete="off"
                         >
