@@ -38,7 +38,7 @@
                     <img src="{{ asset('images/default-avatar.png') }}" alt="Default avatar" width="80">
                 @endif
             </button>
-            @include('layouts.profile-modal')
+            @include('layouts.user-nav')
         @endauth
 
         @guest

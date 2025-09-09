@@ -6,6 +6,8 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Auth\AdminController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\TestimonialController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -98,6 +100,16 @@ Route::middleware('auth')->get('/edit/portfolio', function () {
     return view('edit.blog');
 })->name('edit.blog'); */
 
+//TESTIMONIALS
+Route::middleware('auth')->group(function () {
+    Route::get('/testimonials',            [TestimonialController::class, 'dashboard'])->name('testimonials.dashboard');
+    Route::get('/testimonials/create',     [TestimonialController::class, 'create'])->name('testimonials.create');
+    Route::post('/testimonials',           [TestimonialController::class, 'store'])->name('testimonials.store');
+
+    Route::get('/testimonials/{t}/edit',   [TestimonialController::class, 'edit'])->whereNumber('t')->name('testimonials.edit');
+    Route::put('/testimonials/{t}',        [TestimonialController::class, 'update'])->whereNumber('t')->name('testimonials.update');
+    Route::post('/testimonials/{t}/pin',   [TestimonialController::class, 'togglePin'])->whereNumber('t')->name('testimonials.pin');
+});
 
 
 Route::get('/page/portfolio', function () {
@@ -129,3 +141,4 @@ Route::delete('/page/blog/comment/delete','App\Http\Controllers\CommentControlle
 Route::get('/page/blogfull', function () {
     return view('page.blogfull');
 })->name('page.blogfull');
+

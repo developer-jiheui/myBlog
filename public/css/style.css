@@ -2440,3 +2440,117 @@
 .truncate{ max-width:260px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .divider{ height:1px; background:#1f2937; margin:16px 0; }
 .h3{ font-size:16px; margin:0 0 10px; font-weight:700; }
+
+
+
+/*user nav*/
+
+.profile-button{ position:fixed; right:18px; bottom:18px; z-index:10010; }
+
+/* Popover */
+
+.user-popover {
+    position: fixed;
+    right: 18px;
+    bottom: 102px;
+    z-index: 10011;
+    min-width: 170px;
+    max-width: 88vw;
+
+    /* Match navbar */
+    background: hsla(240, 1%, 17%, 0.75);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--jet);
+
+    border-radius: 12px;
+    box-shadow: var(--shadow-2);
+
+    padding: 8px 2px;
+
+    opacity: 0;
+    transform: translateY(8px) scale(.98);
+    pointer-events: none;
+    transition: opacity .16s ease, transform .16s ease;
+}
+
+.user-popover.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.user-popover::before {
+    display: none;
+}
+
+/* Menu items */
+.up-item {
+    display: block;
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 0.8125rem; /* 12.5px at 16px root */
+    font-weight: 500;
+    color: var(--white-2);
+    background: transparent;
+    border: 0;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+.up-item:hover,
+.up-item:focus {
+    background: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+}
+
+.up-item.danger {
+    color: #f87171;
+}
+.up-item.danger:hover {
+    background: rgba(239, 68, 68, 0.15);
+}
+
+
+.user-popover[aria-hidden="false"]{ opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
+
+.user-popover-backdrop {
+    position: fixed;
+    inset: 0;
+    background: hsla(240, 1%, 17%, 0.4); /* semi-transparent dark */
+    backdrop-filter: blur(0px);           /* blur effect */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 10009; /* just under the popover */
+}
+
+.user-popover-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/*TESTIMONIAL*/
+.testimonial-button {
+    background: var(--bg-gradient-yellow-2);
+    color: var(--white-1);
+
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 18px;
+    border-radius: 999px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    z-index: 9999;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.testimonial-button:hover {
+    background: var(--bg-gradient-yellow-1);
+    color: var(--white-1);
+    transform: translateY(-2px);
+}
