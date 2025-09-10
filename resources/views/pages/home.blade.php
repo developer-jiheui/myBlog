@@ -21,6 +21,16 @@
 
         </section>
 
+{{--        <section class="content-card"--}}
+{{--                 style="margin-top:3rem; margin-bottom:3rem; padding:2rem; text-align:center; background:var(--eerie-black-2); border:1px solid var(--jet); border-radius:14px;">--}}
+{{--            <h3 style="color: var(--orange-yellow-crayola); font-size:1.5rem; margin-bottom:1rem;">--}}
+{{--                🚧 Webpage building in progress 🚧--}}
+{{--            </h3>--}}
+{{--            <p style="color: var(--light-gray); font-size:1rem; line-height:1.5;">--}}
+{{--                This site is currently under construction.--}}
+{{--                New features and pages will be available soon — stay tuned!--}}
+{{--            </p>--}}
+{{--        </section>--}}
 
         <!--
           - service
@@ -221,8 +231,27 @@
 
             </div>
         </section>
-    </article>
 
+
+    </article>
+    <div id="homeModal" class="modal-container" aria-hidden="true">
+        <div class="overlay" data-close></div>
+
+        <section class="modal-panel content-card"
+                 style="margin:0; padding:2rem; text-align:center;">
+            <button class="modal-close-btn" data-close>
+                <ion-icon name="close-outline"></ion-icon>
+            </button>
+
+            <h3 style="color: var(--orange-yellow-crayola); font-size:1.5rem; margin-bottom:1rem;">
+                🚧 Webpage building in progress 🚧
+            </h3>
+            <p style="color: var(--light-gray); font-size:1rem; line-height:1.5;">
+                This site is currently under construction.
+                New features and pages will be available soon — stay tuned!
+            </p>
+        </section>
+    </div>
 
     {{--    <article class="home  active" data-page="home">--}}
 
@@ -288,5 +317,43 @@
 
 {{--        </section>--}}
 {{--    </article>--}}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const homeModal = document.getElementById('homeModal');
+            if (!homeModal) return;
 
+            const overlay = homeModal.querySelector('.overlay');
+
+            const open = () => {
+                homeModal.classList.add('active');
+                overlay.classList.add('active');      // explicit overlay activation
+                document.body.classList.add('modal-open'); // lock scroll & blur content
+            };
+
+            const close = () => {
+                homeModal.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.classList.remove('modal-open');
+            };
+
+            // Close on any [data-close] inside this modal
+            homeModal.querySelectorAll('[data-close]').forEach(el => {
+                el.addEventListener('click', close);
+            });
+
+            // Close on Escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') close();
+            });
+
+            // Show only if not shown before (until tab/browser is closed)
+            if (!sessionStorage.getItem('homeModalShown')) {
+                open();
+                sessionStorage.setItem('homeModalShown', 'true');
+            }
+
+            // Or wire to a button elsewhere:
+            // document.getElementById('openHomeModal')?.addEventListener('click', open);
+        });
+    </script>
 @endsection

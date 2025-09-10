@@ -16,10 +16,12 @@
     document.addEventListener('DOMContentLoaded', () => {
         const trigger = document.querySelector('[data-open-profile]');
         const popover = document.getElementById('userPopover');
+        const backdrop = document.getElementById('popoverBackdrop');
+
         if (!trigger || !popover) return;
 
-        const open  = () => { trigger.setAttribute('aria-expanded','true');  popover.setAttribute('aria-hidden','false'); };
-        const close = () => { trigger.setAttribute('aria-expanded','false'); popover.setAttribute('aria-hidden','true');  };
+        const open  = () => { trigger.setAttribute('aria-expanded','true');  popover.setAttribute('aria-hidden','false'); backdrop.classList.add('active');};
+        const close = () => { trigger.setAttribute('aria-expanded','false'); popover.setAttribute('aria-hidden','true');  backdrop.classList.remove('active');};
         const toggle = () => (popover.getAttribute('aria-hidden') === 'false') ? close() : open();
 
         // Open/close on button
@@ -36,17 +38,4 @@
         // Optional: keep it fixed above the button on resize/scroll (since we use fixed right/bottom, nothing needed)
     });
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const profileBtn = document.querySelector('[data-open-profile]');
-        const popover = document.querySelector('.user-popover');
-        const backdrop = document.getElementById('popoverBackdrop');
-
-        const togglePopover = () => {
-            const isActive = popover.classList.toggle('active');
-            backdrop.classList.toggle('active', isActive);
-        };
-
-        profileBtn.addEventListener('click', togglePopover);
-        backdrop.addEventListener('click', togglePopover);
-    });
 </script>

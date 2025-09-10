@@ -131,24 +131,21 @@
                     <li>No projects found.</li>
                 @endforelse
             </ul>
+            @auth
+                @if(auth()->user()->user_type == 0)
+                    <div style="display:flex; justify-content:flex-end; margin-top:18px;">
+                        <a href="{{ route('edit.portfolio') }}" class="testimonial-button">
+                            <ion-icon name="add-outline" aria-label="Add"></ion-icon> New Portfolio Item
+                        </a>
+                    </div>
+                @endif
+            @endauth
+
         </section>
 
     </article>
 
-    @auth
-        @if(auth()->user()->user_type == 0)
-            <a href="{{ route('edit.portfolio') }}" class="edit-page-button">
-                <ion-icon name="add-outline" aria-label="Add"></ion-icon> New Portfolio Item
-            </a>
-        @endif
-    @endauth
-    @guest
-        {{-- Show login button when user is not logged in --}}
-        <a href="{{ route('page.show', ['name' => 'login']) }}" class="edit-page-button">
-            <ion-icon name="log-in-outline" role="img" aria-label="Login"></ion-icon>
-            Log In
-        </a>
-    @endguest
+
 
     @auth
         {{-- Show profile photo when logged in --}}

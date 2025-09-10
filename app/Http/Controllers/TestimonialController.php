@@ -10,17 +10,28 @@ class TestimonialController extends Controller
     public function dashboard(Request $request)
     {
         $user    = Auth::user();
-        $isAdmin = (int) $user->user_type === 0;
+        $isAdmin = (int)$user->user_type === 0;
 
-        $testimonials = Testimonial::query()
-            ->when(!$isAdmin, fn ($q) => $q->where('author_user_id', $user->id))
+        $query = Testimonial::query()
+            ->when(!$isAdmin, fn($q) => $q->where('author_user_id', $user->id))
             ->orderByDesc('pinned')
-            ->orderByDesc('created_at')
-            ->paginate(12)
-            ->withQueryString();
+            ->orderByDesc('created_at');
 
-        // ✅ this matches your existing Blade file name
-        return view('pages.testimonial', compact('testimonials', 'isAdmin'));
+        // If you still want pagination, do it once, then group in PHP:
+        $testimonials = $query->paginate(24)->withQueryString();
+
+        // Group for lanes (so the blade is simple)
+        $grouped = $testimonials->getCollection()->groupBy('status'); // 0/1/2
+
+        // For lane headers
+        $statusLabels = Testimonial::statusLabels();
+        $val = [
+            'testimonials'  => $testimonials, // keep paginator for links()
+            'grouped'       => $grouped,
+            'isAdmin'       => $isAdmin,
+            'statusLabels'  => $statusLabels,
+        ];
+        return view('pages.testimonial', compact('testimonials', 'grouped', 'isAdmin','val'));
     }
 
     public function create()
@@ -89,5 +100,14 @@ class TestimonialController extends Controller
         $isAdmin = (int) $user->user_type === 0;
 
         abort_unless($isOwner || $isAdmin, 403);
+    }
+
+    // Admin: change status
+    public function updateStatus(Testimonial $t, Request $request)
+    {
+        abort_unless((int)Auth::user()->user_type === 0, 403); // only admin
+        $request->validate(['status' => 'required|in:0,1,2']);
+        $t->update(['status' => $request->status]);
+        return back()->with('success', 'Status updated.');
     }
 }

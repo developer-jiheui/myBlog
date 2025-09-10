@@ -2554,3 +2554,117 @@
     color: var(--white-1);
     transform: translateY(-2px);
 }
+
+/*WARNING MODAL*/
+/*!* Base (hidden) *!*/
+/*.modal-container{*/
+/*    position: fixed; inset: 0;*/
+/*    display: flex; justify-content: center; align-items: flex-start;*/
+/*    padding-top:5rem;*/
+/*    visibility: hidden; pointer-events: none;*/
+/*    z-index: 10050; !* higher than navbar/profile button *!*/
+/*}*/
+/*.modal-container .overlay{*/
+/*    position: fixed; inset: 0;*/
+/*    background: hsl(0 0% 5% / .85); !* dim background *!*/
+/*    opacity: 0; transition: opacity .2s ease;*/
+/*}*/
+/*.testimonials-modal{*/
+/*    position: relative;*/
+/*    background: var(--eerie-black-2);*/
+/*    border: 1px solid var(--jet);*/
+/*    border-radius: 14px;*/
+/*    box-shadow: var(--shadow-5);*/
+/*    padding: 16px;*/
+/*    transform: scale(.98);*/
+/*    opacity: 0;*/
+/*    transition: transform .2s ease, opacity .2s ease;*/
+/*    z-index: 1;*/
+/*}*/
+
+/*!* Visible *!*/
+/*.modal-container.active{*/
+/*    visibility: visible; pointer-events: auto;*/
+/*}*/
+/*.modal-container.active .overlay{ opacity: 1; }*/
+/*.modal-container.active .testimonials-modal{*/
+/*    transform: scale(1); opacity: 1;*/
+/*}*/
+/*.overlay {*/
+/*    position: fixed;*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*    width: 100%;*/
+/*    height: 100%;*/
+/*    backdrop-filter: blur(6px); !* blur effect *!*/
+/*    background: rgba(0, 0, 0, 0.35); !* dim background *!*/
+/*    opacity: 0;*/
+/*    visibility: hidden;*/
+/*    transition: opacity 0.25s ease;*/
+/*    z-index: 999;*/
+/*}*/
+
+/*.overlay.active {*/
+/*    opacity: 1;*/
+/*    visibility: visible;*/
+/*}*/
+/* Base (hidden) */
+.modal-container{
+    position: fixed; inset: 0;
+    display: flex; justify-content: center; align-items: flex-start; /* top aligned */
+    padding-top: 48px; /* distance from top */
+    visibility: hidden; pointer-events: none;
+    z-index: 10050;
+}
+
+/* Dim/blur backdrop */
+.modal-container .overlay{
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(6px);
+    opacity: 0; transition: opacity .25s ease;
+}
+
+/* Panel */
+.modal-panel{
+    position: relative;
+    background: var(--eerie-black-2);
+    border: 1px solid var(--jet);
+    border-radius: 14px;
+    box-shadow: var(--shadow-5);
+    padding: 16px;
+    transform: translateY(-8px) scale(.98);
+    opacity: 0;
+    transition: transform .25s ease, opacity .25s ease;
+    z-index: 10055;
+    max-width: 720px; width: min(92vw, 720px);
+}
+
+/* Visible state */
+.modal-container.active{
+    visibility: visible; pointer-events: auto;
+}
+.modal-container.active .overlay{
+    opacity: 1;
+}
+.modal-container.active .modal-panel{
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+/* Close button */
+.modal-close-btn{
+    position:absolute; top:12px; right:12px;
+    background: var(--onyx); color: var(--white-2);
+    border-radius: 10px; border: 0; width: 34px; height: 34px;
+    display:flex; align-items:center; justify-content:center;
+    opacity:.9;
+}
+.modal-close-btn:hover{ opacity:1; }
+
+/* Optional: lock scroll & subtly blur the page beneath */
+/* keep scroll lock, remove global blur */
+body.modal-open { overflow: hidden; }
+
+/* optional: blur just the page content wrapper */
+.modal-blur { filter: blur(2px);}

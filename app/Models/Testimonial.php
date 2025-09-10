@@ -27,6 +27,10 @@ class Testimonial extends Model
         'updated_at' => 'datetime',
     ];
 
+    public const STATUS_HIDDEN  = 0;
+    public const STATUS_PUBLIC  = 1;
+    public const STATUS_PENDING = 2;
+
     // Who wrote it (optional, nullable if user deleted)
     public function author()
     {
@@ -42,5 +46,13 @@ class Testimonial extends Model
     public function scopePinnedFirst($q)
     {
         return $q->orderByDesc('pinned')->orderByDesc('created_at');
+    }
+
+    public static function statusLabels(): array {
+        return [
+            self::STATUS_PUBLIC  => 'Public',
+            self::STATUS_PENDING => 'Pending',
+            self::STATUS_HIDDEN  => 'Hidden',
+        ];
     }
 }

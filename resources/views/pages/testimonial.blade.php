@@ -6,6 +6,104 @@
             <h2 class="h2 article-title">Testimonials</h2>
         </header>
 
+        @php
+            // Ensure we render lanes in the order you want:
+            $laneOrder = [
+              \App\Models\Testimonial::STATUS_PUBLIC,
+              \App\Models\Testimonial::STATUS_PENDING,
+              \App\Models\Testimonial::STATUS_HIDDEN,
+            ];
+        @endphp
+
+        @if($isAdmin)
+            @foreach(['1' => 'Public', '2' => 'Pending', '0' => 'Hidden'] as $status => $label)
+                <h3 class="h3" style="margin-top:20px;">{{ $label }}</h3>
+                <ul class="project-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;">
+                    @forelse($grouped[$status] ?? [] as $t)
+
+                        <li class="project-item"
+                            data-testimonials-item
+                            style="background:var(--eerie-black-2); border:1px solid var(--jet); border-radius:14px; padding:14px;">
+
+                            <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px; cursor:pointer;">
+                                <img data-testimonials-avatar
+                                     src="{{ $t->author_avatar_url ? asset($t->author_avatar_url) : asset('images/default-avatar.png') }}"
+                                     alt="{{ $t->author_name }}"
+                                     style="width:44px;height:44px;border-radius:12px;object-fit:cover;">
+                                <div>
+                                    <div data-testimonials-title style="font-weight:700; color:var(--white-2);">
+                                        {{ $t->author_name }}
+                                        @if($t->pinned)
+                                            <span style="font-size:12px;color:var(--orange-yellow-crayola);">• pinned</span>
+                                        @endif
+                                    </div>
+                                    <small style="color:var(--light-gray-70);">{{ $t->author_title ?? '—' }}</small>
+                                </div>
+                            </div>
+
+                            <p data-testimonials-text
+                               style="color:var(--light-gray); line-height:1.5; cursor:pointer; min-height:3.2em;">
+                                {{ \Illuminate\Support\Str::limit($t->body, 160) }}
+                            </p>
+
+                            @php $isOwner = (int) auth()->id() === (int) $t->author_user_id; @endphp
+
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                                <small style="color:var(--light-gray-70);">{{ $t->created_at->diffForHumans() }}</small>
+
+                                <div style="display:flex; gap:8px; align-items:center;">
+                                    @if($isOwner)
+{{--                                         Edit (opens your existing edit modal)--}}
+                                        <button class="icon-box open-edit"
+                                                data-edit
+                                                data-update-url="{{ route('testimonials.update', $t) }}"
+                                                data-author-title="{{ $t->author_title }}"
+                                                data-body="{{ $t->body }}"
+                                                title="Edit"
+                                                style="color:#ffd166; background:rgba(255,255,255,.06); border:0; cursor:pointer; display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:10px;">
+                                            <ion-icon name="pencil-outline"></ion-icon>
+                                        </button>
+                                    @endif
+
+                                    @if($isAdmin)
+{{--                                         Pin toggle--}}
+                                        <form method="POST" action="{{ route('testimonials.pin', $t) }}" style="margin:0;">
+                                            @csrf
+                                            <button class="icon-box" title="Toggle pin"
+                                                    style="background:transparent;border:0;color:var(--orange-yellow-crayola);cursor:pointer;">
+                                                <ion-icon name="{{ $t->pinned ? 'bookmark' : 'bookmark-outline' }}"></ion-icon>
+                                            </button>
+                                        </form>
+
+{{--                                         Status menu trigger--}}
+                                        <button class="icon-box js-status-btn"
+                                                data-status-id="{{ $t->id }}"
+                                                data-status-current="{{ (int)$t->status }}"
+                                                title="Change status"
+                                                style="background:transparent;border:0;color:var(--light-gray);cursor:pointer;">
+                                            <ion-icon name="settings-outline"></ion-icon>
+                                        </button>
+                                    @endif
+                                </div>
+                            </div>
+                        </li>
+
+                    @empty
+                        <p style="color:var(--light-gray-70);">No {{ strtolower($label) }} testimonials.</p>
+                    @endforelse
+                </ul>
+            @endforeach
+                <div id="statusPopup" class="user-popover" aria-hidden="true" style="min-width:200px;">
+                    <form id="statusForm" method="POST" action="#">
+                        @csrf
+                        <div style="padding:8px 10px; color:var(--light-gray-70); font-weight:600;">Change status</div>
+                        <input type="hidden" name="status" id="statusInput" value="">
+                        <button type="button" class="up-item js-status-option" data-val="1">Public</button>
+                        <button type="button" class="up-item js-status-option" data-val="2">Pending</button>
+                        <button type="button" class="up-item js-status-option" data-val="0">Hidden</button>
+                    </form>
+                </div>
+        @else
 
         {{-- Grid of testimonial cards --}}
             <ul class="project-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;">
@@ -79,14 +177,15 @@
                 {{ $testimonials->links() }}
             </div>
 
-            {{-- Write button --}}
-            <div style="display:flex; justify-content:flex-end; margin-top:18px;">
-                <a href="{{ route('testimonials.create') }}" id="openCreateTestimonial" class="testimonial-button">
-                    <ion-icon name="add-outline"></ion-icon> Write Testimonial
-                </a>
-            </div>
 
 
+        @endif
+        {{-- Write button --}}
+        <div style="display:flex; justify-content:flex-end; margin-top:18px;">
+            <a href="{{ route('testimonials.create') }}" id="openCreateTestimonial" class="testimonial-button">
+                <ion-icon name="add-outline"></ion-icon> Write Testimonial
+            </a>
+        </div>
 
     {{-- Reuse your existing modal (one instance) --}}
     <div class="modal-container" data-modal-container>
@@ -248,6 +347,64 @@
                 }
             });
         });
+
+        document.addEventListener('DOMContentLoaded',()=>{
+            (function(){
+                const popup = document.getElementById('statusPopup');
+                if (!popup) return;
+
+                const form  = document.getElementById('statusForm');
+                const input = document.getElementById('statusInput');
+
+                let anchorBtn = null;
+
+                // open near clicked settings button
+                document.querySelectorAll('.js-status-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        anchorBtn = btn;
+                        const id = btn.getAttribute('data-status-id');
+
+                        form.action = "{{ url('/testimonials') }}/" + id + "/status";
+                        input.value = btn.getAttribute('data-status-current') || '1';
+
+                        // position: popover above the button
+                        const r = btn.getBoundingClientRect();
+                        popup.style.position = 'fixed';
+                        popup.style.left = (r.right - 200) + 'px'; // popover width ~200
+                        popup.style.top  = (r.top - 10) + 'px';
+
+                        popup.setAttribute('aria-hidden', 'false');
+                        popup.classList.add('active');
+                    });
+                });
+
+                // choose option
+                popup.querySelectorAll('.js-status-option').forEach(op => {
+                    op.addEventListener('click', () => {
+                        input.value = op.getAttribute('data-val');
+                        form.submit();
+                    });
+                });
+
+                // click outside to close
+                document.addEventListener('click', (e) => {
+                    if (!popup.contains(e.target) && !e.target.closest('.js-status-btn')) {
+                        popup.setAttribute('aria-hidden','true');
+                        popup.classList.remove('active');
+                    }
+                });
+
+                // Esc to close
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        popup.setAttribute('aria-hidden','true');
+                        popup.classList.remove('active');
+                    }
+                });
+            })();
+        });
+
     </script>
 
         @if ($errors->any())

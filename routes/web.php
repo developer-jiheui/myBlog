@@ -109,6 +109,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/testimonials/{t}/edit',   [TestimonialController::class, 'edit'])->whereNumber('t')->name('testimonials.edit');
     Route::put('/testimonials/{t}',        [TestimonialController::class, 'update'])->whereNumber('t')->name('testimonials.update');
     Route::post('/testimonials/{t}/pin',   [TestimonialController::class, 'togglePin'])->whereNumber('t')->name('testimonials.pin');
+    Route::post('/testimonials/{t}/status', [TestimonialController::class, 'updateStatus'])
+        ->name('testimonials.status');
 });
 
 
