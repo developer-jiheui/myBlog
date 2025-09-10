@@ -57,6 +57,7 @@ const testimonialsItem = document.querySelectorAll("[data-testimonials-item]");
 const modalContainer = document.querySelector("[data-modal-container]");
 const modalCloseBtn = document.querySelector("[data-modal-close-btn]");
 const overlay = document.querySelector("[data-overlay]");
+const modalAuthorTitle = document.querySelector("[data-modal-author-title]"); // <— new
 
 // modal variable
 const modalImg = document.querySelector("[data-modal-img]");
@@ -78,6 +79,9 @@ for (let i = 0; i < testimonialsItem.length; i++) {
         modalImg.alt = this.querySelector("[data-testimonials-avatar]").alt;
         modalTitle.innerHTML = this.querySelector("[data-testimonials-title]").innerHTML;
         modalText.innerHTML = this.querySelector("[data-testimonials-text]").innerHTML;
+
+        // Set author title from data- attribute (fallback to empty string)
+        modalAuthorTitle.textContent = this.dataset.authorTitle || "";
 
         testimonialsModalFunc();
 

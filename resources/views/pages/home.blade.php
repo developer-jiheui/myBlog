@@ -21,17 +21,6 @@
 
         </section>
 
-{{--        <section class="content-card"--}}
-{{--                 style="margin-top:3rem; margin-bottom:3rem; padding:2rem; text-align:center; background:var(--eerie-black-2); border:1px solid var(--jet); border-radius:14px;">--}}
-{{--            <h3 style="color: var(--orange-yellow-crayola); font-size:1.5rem; margin-bottom:1rem;">--}}
-{{--                🚧 Webpage building in progress 🚧--}}
-{{--            </h3>--}}
-{{--            <p style="color: var(--light-gray); font-size:1rem; line-height:1.5;">--}}
-{{--                This site is currently under construction.--}}
-{{--                New features and pages will be available soon — stay tuned!--}}
-{{--            </p>--}}
-{{--        </section>--}}
-
         <!--
           - service
         -->
@@ -116,13 +105,11 @@
         -->
 
         <section class="testimonials">
-
             <h3 class="h3 testimonials-title">Testimonials</h3>
-
             <ul class="testimonials-list has-scrollbar">
                 @forelse($testimonials as $t)
                     <li class="testimonials-item">
-                        <div class="content-card" data-testimonials-item>
+                        <div class="content-card" data-testimonials-item data-author-title="{{ $t->author_title ?? '' }}">
 
                         <figure class="testimonials-avatar-box">
                             <img data-testimonials-avatar
@@ -138,7 +125,6 @@
                                {{$t->body}}
                             </p>
                         </div>
-
                     </div>
                 </li>
                 @empty
@@ -156,39 +142,27 @@
         -->
 
         <div class="modal-container" data-modal-container>
-
             <div class="overlay" data-overlay></div>
-
             <section class="testimonials-modal">
-
                 <button class="modal-close-btn" data-modal-close-btn>
                     <ion-icon name="close-outline"></ion-icon>
                 </button>
 
                 <div class="modal-img-wrapper">
                     <figure class="modal-avatar-box">
-                        <img src="./assets/images/avatar-1.png" alt="Daniel lewis" width="80" data-modal-img>
+                        <img src="" alt="" width="80" data-modal-img>
                     </figure>
-
-                    <img src="{{ asset("/images/icon-quote.svg") }}" alt="quote icon">
+                    <div class="modal-quote">
+                        <img src="{{ asset("/images/icon-quote.svg") }}" alt="quote icon">
+                    </div>
                 </div>
 
                 <div class="modal-content">
-
-                    <h4 class="h3 modal-title" data-modal-title>Daniel lewis</h4>
-
-                    <time datetime="2021-06-14">14 June, 2021</time>
-
-                    <div data-modal-text>
-                        <p>
-                            Richard was hired to create a corporate identity. We were very pleased with the work done. She has a
-                            lot of experience
-                            and is very concerned about the needs of client. Lorem ipsum dolor sit amet, ullamcous cididt
-                            consectetur adipiscing
-                            elit, seds do et eiusmod tempor incididunt ut laborels dolore magnarels alia.
-                        </p>
+                    <h4 class="modal-title" data-modal-title></h4>
+                    <p class="modal-author-title" data-modal-author-title></p>
+                    <div class="modal-text" data-modal-text>
+                        <p></p>
                     </div>
-
                 </div>
 
             </section>
@@ -234,10 +208,10 @@
 
 
     </article>
-    <div id="homeModal" class="modal-container" aria-hidden="true">
-        <div class="overlay" data-close></div>
+    <div id="homeModal" class="warning-container" aria-hidden="true">
+        <div class="warning-overlay" data-close></div>
 
-        <section class="modal-panel content-card"
+        <section class="warning-panel content-card"
                  style="margin:0; padding:2rem; text-align:center;">
             <button class="modal-close-btn" data-close>
                 <ion-icon name="close-outline"></ion-icon>
@@ -253,76 +227,12 @@
         </section>
     </div>
 
-    {{--    <article class="home  active" data-page="home">--}}
-
-{{--        <header>--}}
-{{--            <!-- <h2 class="h2 article-title">About me</h2> -->--}}
-{{--        </header>--}}
-
-{{--        <section class="about-text">--}}
-{{--        </section>--}}
-
-{{--        <!----}}
-{{--          - service--}}
-{{--        -->--}}
-
-{{--        <section class="service">--}}
-
-{{--            <h3 class="h3 service-title">Latest Blogs</h3>--}}
-
-{{--            <ul class="service-list">--}}
-{{--                @foreach(\App\Models\Blog::latest()->take(4)->get() as $blogItem)--}}
-{{--                    <a class="service-item" href="{{ route('page.blogfull',['id'=>$blogItem['BLOG_ID']]) }}">--}}
-{{--                        <div class="service-icon-box">--}}
-{{--                            <img src="{{ $blogItem['IMAGE_URL'] ?? '/images/default-blog.jpeg' }}" alt="project icon" style = "max-width: 120px; max-height: 120px;">--}}
-{{--                        </div>--}}
-
-{{--                        <div class="service-content-box">--}}
-{{--                            <h4 class="h4 service-item-title">{{ $blogItem->TITLE }}</h4>--}}
-
-{{--                            <p class="service-item-text">--}}
-{{--                                {{ \Illuminate\Support\Str::limit(strip_tags($blogItem['CONTENTS']), 100) }}--}}
-{{--                            </p>--}}
-
-{{--                        </div>--}}
-{{--                    </a>--}}
-
-
-{{--                @endforeach--}}
-
-{{--            </ul>--}}
-
-{{--        </section>--}}
-
-
-{{--        <!----}}
-{{--          - clients--}}
-{{--        -->--}}
-
-{{--        <section class="clients">--}}
-
-{{--            <h3 class="h3 clients-title">Recent works</h3>--}}
-
-{{--            <ul class="clients-list has-scrollbar">--}}
-
-{{--                @foreach(\App\Models\Portfolio::latest()->take(6)->get() as $portfolio)--}}
-
-{{--                            <a href="{{  route('page.portfoliofull',['id'=> $portfolio->PORTFOLIO_ID])}}">--}}
-{{--                                <img src="{{ asset($portfolio->IMAGE_URL ?? 'images/default-blog.png') }}"--}}
-{{--                                     style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px;">--}}
-{{--                            </a>--}}
-{{--                        </li>--}}
-{{--                @endforeach--}}
-{{--            </ul>--}}
-
-{{--        </section>--}}
-{{--    </article>--}}
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const homeModal = document.getElementById('homeModal');
             if (!homeModal) return;
 
-            const overlay = homeModal.querySelector('.overlay');
+            const overlay = homeModal.querySelector('.warning-overlay');
 
             const open = () => {
                 homeModal.classList.add('active');
