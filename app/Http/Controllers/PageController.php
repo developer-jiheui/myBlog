@@ -13,7 +13,7 @@ class PageController extends Controller
         // List of allowed pages (to prevent errors or unwanted access)
         $pages = ['home', 'bio', 'resume', 'experience', 'portfoliofull', 'blog', 'login', 'register', 'blogfull', 'contact'];
         $admin_pages = ['admin'];
-        $user_pages = ['profile'];
+        $user_pages = ['profile', 'history'];
         $superAdmin = \App\Models\User::find(1);
 
 

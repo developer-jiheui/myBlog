@@ -158,3 +158,20 @@ Route::get('/page/blogfull', function () {
     return view('page.blogfull');
 })->name('page.blogfull');
 
+
+//@TODO: REMOVE THIS ONCE EVERYTHING IS UPDATED
+Route::post('/guest-login', function () {
+    $guestUser = \App\Models\User::firstOrCreate(
+        ['email' => 'demo@example.com'],
+        [
+            'name' => 'Guest User',
+            'password' => bcrypt('Demo@1234'),
+            'USER_TYPE' => 1,
+        ]
+    );
+
+    Auth::login($guestUser);
+
+    return redirect()->route('page.show', ['name' => 'home'])
+        ->with('success', 'You are logged in as a guest!');
+})->name('guest.login');

@@ -109,27 +109,28 @@
             <ul class="testimonials-list has-scrollbar">
                 @forelse($testimonials as $t)
                     <li class="testimonials-item">
-                        <div class="content-card" data-testimonials-item data-author-title="{{ $t->author_title ?? '' }}">
+                        <div class="content-card" data-testimonials-item
+                             data-author-title="{{ $t->author_title ?? '' }}">
 
-                        <figure class="testimonials-avatar-box">
-                            <img data-testimonials-avatar
-                                 src="{{ $t->author_avatar_url ? asset($t->author_avatar_url) : asset('images/default-avatar.png') }}"
-                                 alt="{{ $t->author_name }}"
-                                 width="60" data-testimonials-avatar>
-                        </figure>
+                            <figure class="testimonials-avatar-box">
+                                <img data-testimonials-avatar
+                                     src="{{ $t->author_avatar_url ? asset($t->author_avatar_url) : asset('images/default-avatar.png') }}"
+                                     alt="{{ $t->author_name }}"
+                                     width="60" data-testimonials-avatar>
+                            </figure>
 
-                        <h4 class="h4 testimonials-item-title" data-testimonials-title>{{ $t->author_name }}</h4>
+                            <h4 class="h4 testimonials-item-title" data-testimonials-title>{{ $t->author_name }}</h4>
 
-                        <div class="testimonials-text" data-testimonials-text>
-                            <p>
-                               {{$t->body}}
-                            </p>
+                            <div class="testimonials-text" data-testimonials-text>
+                                <p>
+                                    {{$t->body}}
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                </li>
+                    </li>
                 @empty
                     <p>
-                       NO Testimonial yet
+                        NO Testimonial yet
                     </p>
                 @endforelse
             </ul>
@@ -182,19 +183,19 @@
                 <ul class="recent-list has-scrollbar" id="recent-list">
                     @foreach (\App\Models\Portfolio::latest()->take(12)->get() as $p)
                         <li class="recent-item">
-                            <a href="{{ route('page.portfoliofull', ['id' => $p->PORTFOLIO_ID]) }}" class="recent-card">
+                            <a href="{{ route('page.portfoliofull', ['id' => $p->id]) }}" class="recent-card">
                                 <figure class="recent-thumb">
                                     <img
-                                        src="{{ asset($p->IMAGE_URL ?? 'images/default-icon.svg') }}"
-                                        alt="{{ $p->TITLE }}"
+                                        src="{{ asset($p->image_url ?? 'images/default-icon.svg') }}"
+                                        alt="{{ $p->title }}"
                                         loading="lazy"
                                     >
                                 </figure>
 
                                 <div class="recent-body">
-                                    <h4 class="h5 recent-title">{{ $p->TITLE }}</h4>
+                                    <h4 class="h5 recent-title">{{ $p->title }}</h4>
                                     <p class="recent-desc">
-                                        {{ \Illuminate\Support\Str::limit(strip_tags($p->DESCRIPTION), 80) }}
+                                        {{ \Illuminate\Support\Str::limit(strip_tags($p->description), 80) }}
                                     </p>
                                 </div>
                             </a>
@@ -208,62 +209,35 @@
 
 
     </article>
-    <div id="homeModal" class="warning-container" aria-hidden="true">
+    <div id="warningModal" class="warning-container" aria-hidden="true">
         <div class="warning-overlay" data-close></div>
 
-        <section class="warning-panel content-card"
-                 style="margin:0; padding:2rem; text-align:center;">
+        <section class="warning-panel content-card">
             <button class="modal-close-btn" data-close>
                 <ion-icon name="close-outline"></ion-icon>
             </button>
 
-            <h3 style="color: var(--orange-yellow-crayola); font-size:1.5rem; margin-bottom:1rem;">
+            <h3 class="warning-title">
                 🚧 Webpage building in progress 🚧
             </h3>
-            <p style="color: var(--light-gray); font-size:1rem; line-height:1.5;">
+
+            <p class="warning-message">
                 This site is currently under construction.
-                New features and pages will be available soon — stay tuned!
+                <br><br>
+
+                To preview the user experience without signing up, simply use the
+                <strong>Guest Login</strong> button below.
+                <br><br>
+                👇This demo access is temporary and will be updated
             </p>
+
+            <form id="guest-login-form" method="POST" action="{{ route('guest.login') }}">
+                @csrf
+                <button type="submit" class="guest-login-btn">
+                    Guest Login
+                </button>
+            </form>
         </section>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const homeModal = document.getElementById('homeModal');
-            if (!homeModal) return;
-
-            const overlay = homeModal.querySelector('.warning-overlay');
-
-            const open = () => {
-                homeModal.classList.add('active');
-                overlay.classList.add('active');      // explicit overlay activation
-                document.body.classList.add('modal-open'); // lock scroll & blur content
-            };
-
-            const close = () => {
-                homeModal.classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.classList.remove('modal-open');
-            };
-
-            // Close on any [data-close] inside this modal
-            homeModal.querySelectorAll('[data-close]').forEach(el => {
-                el.addEventListener('click', close);
-            });
-
-            // Close on Escape
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') close();
-            });
-
-            // Show only if not shown before (until tab/browser is closed)
-            if (!sessionStorage.getItem('homeModalShown')) {
-                open();
-                sessionStorage.setItem('homeModalShown', 'true');
-            }
-
-            // Or wire to a button elsewhere:
-            // document.getElementById('openHomeModal')?.addEventListener('click', open);
-        });
-    </script>
 @endsection

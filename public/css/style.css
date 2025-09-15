@@ -2244,6 +2244,14 @@ textarea.form-input::-webkit-resizer {
    * RESUME
    */
 
+.timeline-text {
+    max-width: 700px;
+}
+
+
+/*-----------------------------------*\
+  #ADDITION
+\*-----------------------------------*/
 
 .edit-page-button {
     position: fixed;
@@ -2846,30 +2854,8 @@ textarea.form-input::-webkit-resizer {
     pointer-events: auto;
 }
 
-/*TESTIMONIAL*/
 
-.testimonial-button {
-    background: var(--bg-gradient-yellow-2);
-    color: var(--white-1);
-
-    font-size: 14px;
-    font-weight: 500;
-    padding: 10px 18px;
-    border-radius: 999px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    z-index: 9999;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(6px);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.testimonial-button:hover {
-    background: var(--bg-gradient-yellow-1);
-    color: var(--white-1);
-    transform: translateY(-2px);
-}
+/* ===== WARNING MODAL ===== */
 
 .warning-container {
     position: fixed;
@@ -2902,13 +2888,49 @@ textarea.form-input::-webkit-resizer {
     border: 1px solid var(--jet);
     border-radius: 14px;
     box-shadow: var(--shadow-5);
-    padding: 16px;
+    padding: 2rem;
     transform: translateY(-8px) scale(.98);
     opacity: 0;
     transition: transform .25s ease, opacity .25s ease;
     z-index: 10055;
     max-width: 720px;
     width: min(92vw, 720px);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.warning-title {
+    color: var(--orange-yellow-crayola);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.warning-message {
+    color: var(--light-gray);
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+#guest-login-form {
+    align-self: center;
+}
+
+.guest-login-btn {
+    margin-top: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--orange-yellow-crayola);
+    color: var(--smoky-black);
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    align-self: center;
+}
+
+.guest-login-btn:hover {
+    background-color: var(--vegas-gold);
 }
 
 /* Visible state */

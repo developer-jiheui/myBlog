@@ -1,4 +1,3 @@
-
 // Helper function to toggle classes
 function elementToggleFunc(el) {
     el.classList.toggle("active");
@@ -43,13 +42,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-    document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
     const input = document.getElementById('autocomplete');
     const autocomplete = new google.maps.places.Autocomplete(input, {
-    types: ['geocode']  // only addresses
+        types: ['geocode']  // only addresses
+    });
 });
-});
-
 
 
 // testimonials variables
@@ -94,4 +92,43 @@ modalCloseBtn.addEventListener("click", testimonialsModalFunc);
 overlay.addEventListener("click", testimonialsModalFunc);
 
 
-//modal test
+//--------------------------//
+//warning modal
+document.addEventListener('DOMContentLoaded', () => {
+    const warningModal = document.getElementById('warningModal');
+    if (!warningModal) return;
+
+    const overlay = warningModal.querySelector('.warning-overlay');
+
+    const open = () => {
+        warningModal.classList.add('active');
+        overlay.classList.add('active');      // explicit overlay activation
+        document.body.classList.add('modal-open'); // lock scroll & blur content
+    };
+
+    const close = () => {
+        warningModal.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.classList.remove('modal-open');
+    };
+
+    // Close on any [data-close] inside this modal
+    warningModal.querySelectorAll('[data-close]').forEach(el => {
+        el.addEventListener('click', close);
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') close();
+    });
+
+    // // Show only if not shown before (until tab/browser is closed)
+    if (!sessionStorage.getItem('warningModalShown')) {
+        open();
+        sessionStorage.setItem('warningModalShown', 'true');
+    }
+
+    // open();
+    // Or wire to a button elsewhere:
+    // document.getElementById('openHomeModal')?.addEventListener('click', open);
+});
