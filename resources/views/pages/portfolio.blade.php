@@ -74,12 +74,6 @@
                         </a>
 
                         {{-- Interactions: like/edit/delete --}}
-
-                        {{-- debug: remove after testing --}}
-                        {{--                        @dump(Auth::id())--}}
-                        {{--                        @dump(!empty(Auth::user()->id))--}}
-                        {{--                        @dump($p->liked_at, $p->like_count, $p->id)--}}
-                        @dump($p->liked_by_me)
                         @auth
                             @if(auth()->user()->user_type == 0)
                                 <div class="project-interact">
