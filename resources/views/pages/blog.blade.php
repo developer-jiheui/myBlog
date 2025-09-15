@@ -11,23 +11,23 @@
             <ul class="blog-posts-list">
                 @foreach (\App\Models\Blog::latest()->get() as $blogItem)
                     <li class="blog-post-item">
-                        <a href="{{ route('page.blogfull', ['id' => $blogItem['BLOG_ID']]) }}">
+                        <a href="{{ route('page.blogfull', ['id' => $blogItem['id']]) }}">
                             <figure class="blog-banner-box">
-                                <img src="{{ $blogItem['IMAGE_URL'] ?? '/images/default-blog.jpeg' }}"
+                                <img src="{{ $blogItem['image_url'] ?? '/images/default-blog.jpeg' }}"
                                      alt="Blog thumbnail" loading="lazy">
                             </figure>
 
                             <div class="blog-content">
                                 <div class="blog-meta">
-                                    <p class="blog-category">By User {{ $blogItem['USER_ID'] }}</p>
+{{--                                    <p class="blog-category">By User {{ $blogItem['user_id'] }}</p>--}}
                                     <span class="dot"></span>
-                                    <time>{{ \Carbon\Carbon::parse($blogItem['CREATED_AT'])->format('M d, Y') }}</time>
+                                    <time>{{ \Carbon\Carbon::parse($blogItem['created_at'])->format('M d, Y') }}</time>
                                 </div>
 
-                                <h3 class="h3 blog-item-title">{{ $blogItem['TITLE'] }}</h3>
+                                <h3 class="h3 blog-item-title">{{ $blogItem['title'] }}</h3>
 
                                 <p class="blog-text">
-                                    {{ \Illuminate\Support\Str::limit(strip_tags($blogItem['CONTENTS']), 150) }}
+                                    {{ \Illuminate\Support\Str::limit(strip_tags($blogItem['contents']), 150) }}
                                 </p>
                             </div>
                         </a>

@@ -7,15 +7,15 @@
                    data-nav-link>Home</a>
             </li>
 
-{{--            <li class="navbar-item">--}}
-{{--                <a href="{{ route('page.show', ['name' => 'experience']) }}"--}}
-{{--                   class="navbar-link {{ (request()->routeIs('page.show') && request()->route('name') === 'experience') ? 'active' : '' }}"--}}
-{{--                   data-nav-link>Experience</a>--}}
-{{--            </li>--}}
+            {{--            <li class="navbar-item">--}}
+            {{--                <a href="{{ route('page.show', ['name' => 'experience']) }}"--}}
+            {{--                   class="navbar-link {{ (request()->routeIs('page.show') && request()->route('name') === 'experience') ? 'active' : '' }}"--}}
+            {{--                   data-nav-link>Experience</a>--}}
+            {{--            </li>--}}
 
             <li class="navbar-item">
-                <a href="{{ route('page.show', ['name' => 'portfolio']) }}"
-                   class="navbar-link {{ (request()->routeIs('page.show') && request()->route('name') === 'portfolio') ? 'active' : '' }}"
+                <a href="{{ route('portfolio.index') }}"
+                   class="navbar-link {{ (request()->routeIs('portfolio.index')) ? 'active' : '' }}"
                    data-nav-link>Portfolio</a>
             </li>
 

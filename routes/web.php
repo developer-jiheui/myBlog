@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PortfolioController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\Auth\LoginController;
@@ -53,7 +54,9 @@ Route::get('/', [PageController::class, 'show'])->defaults('name', 'home')->name
 Route::get('/page/{name}', [PageController::class, 'show'])->name('page.show');
 
 //LOGIN, LOG OUT
-Route::get('/login', function () {return view('pages.login');});
+Route::get('/login', function () {
+    return view('pages.login');
+});
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
@@ -73,7 +76,8 @@ Route::middleware(['auth'])->group(function () {
 });
 Route::get('/admin/profile', [AdminController::class, 'profile'])
     ->middleware('auth')
-    ->name('admin.profile');Route::post('/admin/update', [AdminController::class, 'update'])->middleware('auth')->name('admin.update');
+    ->name('admin.profile');
+Route::post('/admin/update', [AdminController::class, 'update'])->middleware('auth')->name('admin.update');
 Route::get('/admin-debug', function () {
     $users = \App\Models\User::all();
     return view('pages.admin', compact('users'));
@@ -84,10 +88,11 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/admin/delete/{id}', [AdminController::class, 'delete'])->name('admin.delete');
 });
 //USER
-Route::get('/profile', function () {return view('pages.profile');})->middleware('auth')->name('profile');
+Route::get('/profile', function () {
+    return view('pages.profile');
+})->middleware('auth')->name('profile');
 
 //-----------------
-
 
 
 Route::middleware('auth')->get('/edit/home', function () {
@@ -102,42 +107,51 @@ Route::middleware('auth')->get('/edit/portfolio', function () {
 
 //TESTIMONIALS
 Route::middleware('auth')->group(function () {
-    Route::get('/testimonials',            [TestimonialController::class, 'dashboard'])->name('testimonials.dashboard');
-    Route::get('/testimonials/create',     [TestimonialController::class, 'create'])->name('testimonials.create');
-    Route::post('/testimonials',           [TestimonialController::class, 'store'])->name('testimonials.store');
+    Route::get('/testimonials', [TestimonialController::class, 'dashboard'])->name('testimonials.dashboard');
+    Route::get('/testimonials/create', [TestimonialController::class, 'create'])->name('testimonials.create');
+    Route::post('/testimonials', [TestimonialController::class, 'store'])->name('testimonials.store');
 
-    Route::get('/testimonials/{t}/edit',   [TestimonialController::class, 'edit'])->whereNumber('t')->name('testimonials.edit');
-    Route::put('/testimonials/{t}',        [TestimonialController::class, 'update'])->whereNumber('t')->name('testimonials.update');
-    Route::post('/testimonials/{t}/pin',   [TestimonialController::class, 'togglePin'])->whereNumber('t')->name('testimonials.pin');
+    Route::get('/testimonials/{t}/edit', [TestimonialController::class, 'edit'])->whereNumber('t')->name('testimonials.edit');
+    Route::put('/testimonials/{t}', [TestimonialController::class, 'update'])->whereNumber('t')->name('testimonials.update');
+    Route::post('/testimonials/{t}/pin', [TestimonialController::class, 'togglePin'])->whereNumber('t')->name('testimonials.pin');
     Route::post('/testimonials/{t}/status', [TestimonialController::class, 'updateStatus'])
         ->name('testimonials.status');
 });
 
 
-Route::get('/page/portfolio', function () {
-    return view('page.portfolio');
-})->name('page.portfolio');
+//PORTFOLIOS
+// routes/web.php
+Route::get('/portfolios', [PortfolioController::class, 'index'])->name('portfolio.index');
+Route::post('/portfolios', [PortfolioController::class, 'store'])->middleware('auth')->name('portfolio.store');
+Route::put('/portfolios/{portfolio}', [PortfolioController::class, 'update'])->middleware('auth')->name('portfolio.update');
+Route::delete('/portfolios/{portfolio}', [PortfolioController::class, 'destroy'])->middleware('auth')->name('portfolio.destroy');
+
+Route::post('/portfolios/{portfolio}/like', [PortfolioController::class, 'like'])
+    ->middleware('auth')
+    ->name('portfolio.like');
+
+
 Route::get('/page/portfoliofull', function () {
     return view('page.portfoliofull');
 })->name('page.portfoliofull');
 Route::middleware(['auth'])->get('/edit/portfolio', function () {
     return view('edit.portfolio');
 })->name('edit.portfolio');
-Route::middleware(['auth'])->delete('/edit/portfolio/delete','App\Http\Controllers\PortfolioController@delete')->name('edit.portfolio.delete');
-Route::middleware(['auth'])->patch('/edit/portfolio/update','App\Http\Controllers\PortfolioController@edit')->name('edit.portfolio.update');
-Route::middleware(['auth'])->post('/edit/portfolio/create','App\Http\Controllers\PortfolioController@create')->name('edit.portfolio.create');
-Route::middleware(['auth'])->post('/portfolio/like','App\Http\Controllers\PortfolioController@like')->name('page.portfolio.like');
+Route::middleware(['auth'])->delete('/edit/portfolio/delete', 'App\Http\Controllers\PortfolioController@delete')->name('edit.portfolio.delete');
+Route::middleware(['auth'])->patch('/edit/portfolio/update', 'App\Http\Controllers\PortfolioController@edit')->name('edit.portfolio.update');
+Route::middleware(['auth'])->post('/edit/portfolio/create', 'App\Http\Controllers\PortfolioController@create')->name('edit.portfolio.create');
+Route::middleware(['auth'])->post('/portfolio/like', 'App\Http\Controllers\PortfolioController@like')->name('page.portfolio.like');
 
 
 Route::get('/edit/blog', function () {
     return view('edit.blog');
 })->name('edit.blog');
-Route::delete('/edit/blog/delete','App\Http\Controllers\BlogController@delete')->name('edit.blog.delete');
-Route::patch('/edit/blog/update','App\Http\Controllers\BlogController@edit')->name('edit.blog.update');
-Route::post('/edit/blog/create','App\Http\Controllers\BlogController@create')->name('edit.blog.create');
-Route::middleware(['auth'])->post('/page/blog/comment','App\Http\Controllers\CommentController@create')->name('page.blog.comment');
-Route::patch('/page/blog/comment/update','App\Http\Controllers\CommentController@edit')->name('page.blog.comment.update');
-Route::delete('/page/blog/comment/delete','App\Http\Controllers\CommentController@delete')->name('page.blog.comment.delete');
+Route::delete('/edit/blog/delete', 'App\Http\Controllers\BlogController@delete')->name('edit.blog.delete');
+Route::patch('/edit/blog/update', 'App\Http\Controllers\BlogController@edit')->name('edit.blog.update');
+Route::post('/edit/blog/create', 'App\Http\Controllers\BlogController@create')->name('edit.blog.create');
+Route::middleware(['auth'])->post('/page/blog/comment', 'App\Http\Controllers\CommentController@create')->name('page.blog.comment');
+Route::patch('/page/blog/comment/update', 'App\Http\Controllers\CommentController@edit')->name('page.blog.comment.update');
+Route::delete('/page/blog/comment/delete', 'App\Http\Controllers\CommentController@delete')->name('page.blog.comment.delete');
 
 //route to set up blogfull
 Route::get('/page/blogfull', function () {

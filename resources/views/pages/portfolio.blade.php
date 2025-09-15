@@ -4,23 +4,6 @@
     @php
         use Illuminate\Support\Facades\DB;
 
-        $activeCat = request('cat');
-
-        // Build the portfolio list, optionally filtered by category (via entity_labels)
-        $portfolios = \App\Models\Portfolio::query()
-            ->when($activeCat, function ($q) use ($activeCat) {
-                $q->whereExists(function ($sub) use ($activeCat) {
-                    $sub->select(DB::raw(1))
-                        ->from('entity_labels as el')
-                        ->whereColumn('el.target_id', 'portfolios.id')
-                        ->where('el.target_type', 'portfolio')
-                        ->where('el.kind', 'category')
-                        ->where('el.slug', $activeCat);
-                });
-            })
-            ->orderByDesc('created_at')
-            ->get();
-
         // Categories come back as ['slug' => 'Display Name']
         $categories = \App\Models\Portfolio::categories();
     @endphp
@@ -34,12 +17,12 @@
             {{-- Filter tabs --}}
             <ul class="filter-list">
                 <li class="filter-item">
-                    <a href="{{ route('page.portfolio') }}" class="{{ $activeCat ? '' : 'active' }}">All</a>
+                    <a href="{{ route('portfolio.index') }}" class="{{ $activeCat ? '' : 'active' }}">All</a>
                 </li>
 
                 @foreach($categories as $slug => $name)
                     <li class="filter-item">
-                        <a href="{{ route('page.portfolio', ['cat' => $slug]) }}"
+                        <a href="{{ route('portfolio.index', ['cat' => $slug]) }}"
                            class="{{ $activeCat === $slug ? 'active' : '' }}">
                             {{ $name }}
                         </a>
@@ -60,9 +43,6 @@
 
                         $imgUrl = $cover ?: ($p->image_url ?: '/images/default-blog.jpeg');
 
-                        $liked = auth()->check()
-                            ? DB::table('likes')->where('portfolio_id', $p->id)->where('user_id', auth()->id())->exists()
-                            : false;
                     @endphp
 
                     <li class="project-item">
@@ -94,13 +74,21 @@
                         </a>
 
                         {{-- Interactions: like/edit/delete --}}
+
+                        {{-- debug: remove after testing --}}
+                        {{--                        @dump(Auth::id())--}}
+                        {{--                        @dump(!empty(Auth::user()->id))--}}
+                        {{--                        @dump($p->liked_at, $p->like_count, $p->id)--}}
+                        @dump($p->liked_by_me)
                         @auth
-                            @if(auth()->user()->user_type == 0 && auth()->id() == $p->user_id)
+                            @if(auth()->user()->user_type == 0)
                                 <div class="project-interact">
-                                    <a class="icon-box" href="{{ route('edit.portfolio', ['id' => $p->id]) }}">
+                                    <a class="icon-box"
+                                       href="{{ route('edit.portfolio', ['portfolio_id' => $p->id]) }}">
                                         <ion-icon name="pencil-outline" aria-label="Edit"></ion-icon>
                                     </a>
-                                    <form action="{{ route('edit.portfolio.delete', ['id' => $p->id]) }}" method="post">
+                                    <form action="{{ route('edit.portfolio.delete', ['portfolio_id' => $p->id]) }}"
+                                          method="post">
                                         @csrf
                                         @method('delete')
                                         <button class="icon-box">
@@ -109,23 +97,22 @@
                                     </form>
                                 </div>
                             @else
-                                <form action="{{ route('page.portfolio.like', ['id' => $p->id, 'cat' => $activeCat]) }}"
-                                      method="post" class="project-interact">
+                                <form
+                                    action="{{ route('portfolio.like', $p) }}"
+                                    method="post" class="project-interact">
                                     @csrf
-                                    <button class="icon-box" title="{{ $liked ? 'Liked' : 'Like' }}">
-                                        <ion-icon {{ $liked ? 'name=thumbs-up aria-label=Liked' : 'name=thumbs-up-outline aria-label=Like' }}></ion-icon>
+                                    <button class="icon-box"
+                                            title="{{ ($p->liked_by_me ?? false) ? 'Liked' : 'Like' }}">
+                                        <ion-icon
+                                            name="{{ $p->liked_by_me ? 'thumbs-up' : 'thumbs-up-outline' }}"
+                                            aria-label="{{ $p->liked_by_me ? 'Liked' : 'Like' }}">
+                                        </ion-icon>
                                         {{ $p->like_count > 0 ? $p->like_count : '' }}
                                     </button>
                                 </form>
+
                             @endif
                         @endauth
-
-                        @guest
-                            <span class="icon-box project-interact">
-              <ion-icon name="thumbs-up-outline" aria-label="Likes"></ion-icon>
-              {{ $p->like_count > 0 ? $p->like_count : '' }}
-            </span>
-                        @endguest
                     </li>
                 @empty
                     <li>No projects found.</li>
@@ -135,13 +122,13 @@
                 @if(auth()->user()->user_type == 0)
                     <div style="display:flex; justify-content:flex-end; margin-top:18px;">
                         <a href="{{ route('edit.portfolio') }}" class="testimonial-button">
-                            <ion-icon name="add-outline" aria-label="Add"></ion-icon> New Portfolio Item
+                            <ion-icon name="add-outline" aria-label="Add"></ion-icon>
+                            New Portfolio Item
                         </a>
                     </div>
-                @endif
-            @endauth
+        @endif
+        @endauth
 
-        </section>
 
     </article>
 
