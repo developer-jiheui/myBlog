@@ -94,41 +94,114 @@ overlay.addEventListener("click", testimonialsModalFunc);
 
 //--------------------------//
 //warning modal
+// document.addEventListener('DOMContentLoaded', () => {
+//     const warningModal = document.getElementById('warningModal');
+//     if (!warningModal) return;
+//
+//     const overlay = warningModal.querySelector('.warning-overlay');
+//
+//     const open = () => {
+//         warningModal.classList.add('active');
+//         overlay.classList.add('active');      // explicit overlay activation
+//         document.body.classList.add('modal-open'); // lock scroll & blur content
+//     };
+//
+//     const close = () => {
+//         warningModal.classList.remove('active');
+//         overlay.classList.remove('active');
+//         document.body.classList.remove('modal-open');
+//     };
+//
+//     // Close on any [data-close] inside this modal
+//     warningModal.querySelectorAll('[data-close]').forEach(el => {
+//         el.addEventListener('click', close);
+//     });
+//
+//     // Close on Escape
+//     document.addEventListener('keydown', (e) => {
+//         if (e.key === 'Escape') close();
+//     });
+//
+//     // // Show only if not shown before (until tab/browser is closed)
+//     if (!sessionStorage.getItem('warningModalShown')) {
+//         open();
+//         sessionStorage.setItem('warningModalShown', 'true');
+//     }
+//
+//     // open();
+//     // Or wire to a button elsewhere:
+//     // document.getElementById('openHomeModal')?.addEventListener('click', open);
+// });
+
 document.addEventListener('DOMContentLoaded', () => {
-    const warningModal = document.getElementById('warningModal');
-    if (!warningModal) return;
+    document.querySelectorAll('[data-modal]').forEach((modal) => {
+        const overlay = modal.querySelector('.warning-overlay');
 
-    const overlay = warningModal.querySelector('.warning-overlay');
+        const open = () => {
+            modal.classList.add('active');
+            overlay?.classList.add('active');
+            document.body.classList.add('modal-open');
+        };
 
-    const open = () => {
-        warningModal.classList.add('active');
-        overlay.classList.add('active');      // explicit overlay activation
-        document.body.classList.add('modal-open'); // lock scroll & blur content
-    };
+        const close = () => {
+            modal.classList.remove('active');
+            overlay?.classList.remove('active');
+            document.body.classList.remove('modal-open');
+        };
 
-    const close = () => {
-        warningModal.classList.remove('active');
-        overlay.classList.remove('active');
-        document.body.classList.remove('modal-open');
-    };
+        modal.querySelectorAll('[data-close]').forEach(el => {
+            el.addEventListener('click', close);
+        });
 
-    // Close on any [data-close] inside this modal
-    warningModal.querySelectorAll('[data-close]').forEach(el => {
-        el.addEventListener('click', close);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') close();
+        });
+        // // Example: auto-open only on certain pages (add a flag in the page if desired)
+        // if (modal.id === 'homeModal') {
+        //     if (!sessionStorage.getItem('homeModalShown')) {
+        //         open();
+        //         sessionStorage.setItem('homeModalShown', 'true');
+        //     }
+        // } else {
+        //     // Optional: auto-open only if this modal has data-open-on-load
+        //     if (modal.hasAttribute('data-open-on-load')) {
+        //         open();
+        //     } else {
+        //         open();
+        //     }
+        // }
+
+        if (modal.hasAttribute('data-open-on-load')) {
+            open();
+        } else {
+            open();
+        }
+        // Handle "Don't show again" (session)
+        modal.querySelectorAll('[data-dismiss-key]').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const key = btn.getAttribute('data-dismiss-key'); // e.g. "home"
+                try {
+                    await fetch(`{{ route('modal.dismiss') }}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrf
+                        },
+                        body: JSON.stringify({key})
+                    });
+                } catch (e) {
+                    // optional: toast/log
+                    console.warn('Dismiss save failed:', e);
+                } finally {
+                    close();
+                }
+            });
+        });
+
+        // Optional: expose open/close globally to trigger from buttons
+        modal.dataset.controller = JSON.stringify({id: modal.id});
+        window[`open_${modal.id}`] = open;
+        window[`close_${modal.id}`] = close;
     });
-
-    // Close on Escape
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') close();
-    });
-
-    // // Show only if not shown before (until tab/browser is closed)
-    if (!sessionStorage.getItem('warningModalShown')) {
-        open();
-        sessionStorage.setItem('warningModalShown', 'true');
-    }
-
-    // open();
-    // Or wire to a button elsewhere:
-    // document.getElementById('openHomeModal')?.addEventListener('click', open);
 });
+

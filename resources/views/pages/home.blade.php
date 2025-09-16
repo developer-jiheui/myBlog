@@ -209,35 +209,50 @@
 
 
     </article>
-    <div id="warningModal" class="warning-container" aria-hidden="true">
-        <div class="warning-overlay" data-close></div>
-
-        <section class="warning-panel content-card">
-            <button class="modal-close-btn" data-close>
-                <ion-icon name="close-outline"></ion-icon>
-            </button>
-
-            <h3 class="warning-title">
-                🚧 Webpage building in progress 🚧
-            </h3>
-
-            <p class="warning-message">
-                This site is currently under construction.
-                <br><br>
-
-                To preview the user experience without signing up, simply use the
-                <strong>Guest Login</strong> button below.
-                <br><br>
-                👇This demo access is temporary and will be updated
-            </p>
-
-            <form id="guest-login-form" method="POST" action="{{ route('guest.login') }}">
+    <x-modal id="homeModal" variant="warning" size="md">
+        <x-slot:actions>
+            <form method="POST" action="{{ route('guest.login') }}">
                 @csrf
-                <button type="submit" class="guest-login-btn">
-                    Guest Login
-                </button>
+                <button type="submit" class="guest-login-btn">Guest Login</button>
             </form>
-        </section>
-    </div>
+
+            <button type="button"
+                    class="guest-login-btn"
+                    data-dismiss-key="home"
+                    style="margin-left:.5rem; background:#555; color:#fff;">
+                Don’t show this again
+            </button>
+        </x-slot:actions>
+    </x-modal>
+    {{--    <div id="warningModal" class="warning-container" aria-hidden="true">--}}
+    {{--        <div class="warning-overlay" data-close></div>--}}
+
+    {{--        <section class="warning-panel content-card">--}}
+    {{--            <button class="modal-close-btn" data-close>--}}
+    {{--                <ion-icon name="close-outline"></ion-icon>--}}
+    {{--            </button>--}}
+
+    {{--            <h3 class="warning-title">--}}
+    {{--                🚧 Webpage building in progress 🚧--}}
+    {{--            </h3>--}}
+
+    {{--            <p class="warning-message">--}}
+    {{--                This site is currently under construction.--}}
+    {{--                <br><br>--}}
+
+    {{--                To preview the user experience without signing up, simply use the--}}
+    {{--                <strong>Guest Login</strong> button below.--}}
+    {{--                <br><br>--}}
+    {{--                👇This demo access is temporary and will be updated--}}
+    {{--            </p>--}}
+
+    {{--            <form id="guest-login-form" method="POST" action="{{ route('guest.login') }}">--}}
+    {{--                @csrf--}}
+    {{--                <button type="submit" class="guest-login-btn">--}}
+    {{--                    Guest Login--}}
+    {{--                </button>--}}
+    {{--            </form>--}}
+    {{--        </section>--}}
+    {{--    </div>--}}
 
 @endsection

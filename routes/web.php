@@ -120,7 +120,7 @@ Route::middleware('auth')->group(function () {
 
 
 //PORTFOLIOS
-// routes/web.php
+
 Route::get('/portfolios', [PortfolioController::class, 'index'])->name('portfolio.index');
 Route::post('/portfolios', [PortfolioController::class, 'store'])->middleware('auth')->name('portfolio.store');
 Route::put('/portfolios/{portfolio}', [PortfolioController::class, 'update'])->middleware('auth')->name('portfolio.update');
@@ -157,6 +157,22 @@ Route::delete('/page/blog/comment/delete', 'App\Http\Controllers\CommentControll
 Route::get('/page/blogfull', function () {
     return view('page.blogfull');
 })->name('page.blogfull');
+
+
+//MODAL
+Route::post('/modal/dismiss', function (Request $request) {
+    $key = $request->string('key')->trim();   // e.g. 'home'
+    if ($key === '') {
+        return response()->json(['ok' => false, 'error' => 'Missing key'], 422);
+    }
+
+    // store dismissed modals in a session array
+    $dismissed = session('dismissed_modals', []);
+    $dismissed[$key] = true;
+    session(['dismissed_modals' => $dismissed]);
+
+    return response()->json(['ok' => true]);
+})->name('modal.dismiss');
 
 
 //@TODO: REMOVE THIS ONCE EVERYTHING IS UPDATED
