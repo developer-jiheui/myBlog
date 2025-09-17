@@ -57,4 +57,19 @@
             </div>
         </section>
     </article>
+    <x-modal id="loginModal" variant="warning"
+             size="md" :openOnLoad="!($dismissedModals['login'] ?? false)">
+        <x-slot:actions>
+            <form method="POST" action="{{ route('guest.login') }}" id="warning-form">
+                @csrf
+                <button type="submit" class="guest-login-btn">Guest Login</button>
+            </form>
+
+            <label class="warning-dismiss">
+                <input type="checkbox" data-dismiss-key="login" id="dont-show-login">
+                Don’t show this message again
+            </label>
+        </x-slot:actions>
+    </x-modal>
+
 @endsection
