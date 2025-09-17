@@ -29,13 +29,13 @@
         @endif
 
         {{-- Main content from the caller (optional) --}}
-        <div class="modal-slot">
+        <div class="warning-modal-slot">
             {{ $slot }}
         </div>
 
         {{-- Optional actions area --}}
         @isset($actions)
-            <div class="modal-actions">
+            <div class="warning-modal-actions">
                 {{ $actions }}
             </div>
         @endisset

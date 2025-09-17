@@ -212,17 +212,15 @@
     <x-modal id="homeModal" variant="warning"
              size="md" :openOnLoad="!($dismissedModals['home'] ?? false)">
         <x-slot:actions>
-            <form method="POST" action="{{ route('guest.login') }}">
+            <form method="POST" action="{{ route('guest.login') }}" id="warning-form">
                 @csrf
                 <button type="submit" class="guest-login-btn">Guest Login</button>
             </form>
 
-            <button type="button"
-                    class="guest-login-btn"
-                    data-dismiss-key="home"
-                    style="margin-left:.5rem; background:#555; color:#fff;">
-                Don’t show this again
-            </button>
+            <label class="warning-dismiss">
+                <input type="checkbox" data-dismiss-key="home" id="dont-show-home">
+                Don’t show this message again
+            </label>
         </x-slot:actions>
     </x-modal>
 

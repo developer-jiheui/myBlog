@@ -2896,6 +2896,8 @@ textarea.form-input::-webkit-resizer {
     max-width: 720px;
     width: min(92vw, 720px);
     text-align: center;
+    align-items: center;
+    justify-content: center;
     display: flex;
     flex-direction: column;
 }
@@ -2912,8 +2914,10 @@ textarea.form-input::-webkit-resizer {
     line-height: 1.5;
 }
 
-#guest-login-form {
-    align-self: center;
+#warning-form {
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 .guest-login-btn {
@@ -2955,6 +2959,28 @@ textarea.form-input::-webkit-resizer {
     background: rgba(0, 0, 0, 0.35);
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
+}
+
+.warning-modal-actions {
+    width: 100%;
+}
+
+.warning-dismiss {
+    width: 100%;
+    color: var(--light-gray);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.warning-dismiss input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
 }
 
 /* Close button */

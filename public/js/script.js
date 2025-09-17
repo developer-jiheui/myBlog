@@ -234,10 +234,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // “Don’t show again” → save to Laravel session (no localStorage)
-        modal.querySelectorAll('[data-dismiss-key]').forEach(btn => {
-            btn.addEventListener('click', async () => {
-                const btnKey = btn.getAttribute('data-dismiss-key');
-                if (!btnKey) return;
+        document.querySelectorAll('[data-dismiss-key]').forEach(input => {
+            input.addEventListener('change', async (e) => {
+                const key = input.getAttribute('data-dismiss-key');
+                if (!key) return;
+                if (!input.checked) return; // only save when checked
 
                 try {
                     await fetch(dismissUrl, {
@@ -247,19 +248,14 @@ document.addEventListener('DOMContentLoaded', () => {
                             'X-CSRF-TOKEN': csrf,
                             'X-Requested-With': 'XMLHttpRequest'
                         },
-                        credentials: 'same-origin', // send session cookie
-                        body: JSON.stringify({key: btnKey})
+                        credentials: 'same-origin',
+                        body: JSON.stringify({key})
                     });
                 } catch (err) {
                     console.warn('Dismiss save failed:', err);
-                } finally {
-                    // After saving to session, close now; the next page load
-                    // Blade will see the session flag and NOT render data-open-on-load.
-                    close();
                 }
             });
         });
-
         // Optional helpers
         window[`open_${modal.id}`] = open;
         window[`close_${modal.id}`] = close;
