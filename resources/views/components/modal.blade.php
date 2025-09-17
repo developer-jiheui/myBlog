@@ -2,9 +2,17 @@
   'id' => 'appModal',
   'title' =>"🚧 Webpage building in progress 🚧",
   'message' => null,
+  'variant'=> 'warning',
+  'size' => 'md',
+  'openOnLoad' => false,
 ])
-<div id="{{ $id }}" data-modal class="warning-container" aria-hidden="true">
+<div id="{{ $id }}"
+     data-modal
+     {{ $openOnLoad ? 'data-open-on-load' : '' }}
+     class="warning-container"
+     aria-hidden="true">
     <div class="warning-overlay" data-close></div>
+
 
     <section
         class="warning-panel content-card {{ $size === 'lg' ? 'modal-lg' : '' }} {{ $variant ? 'modal-'.$variant : '' }}">

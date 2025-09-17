@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\PortfolioController;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\UserController;
@@ -9,6 +9,9 @@ use App\Http\Controllers\Auth\AdminController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\TestimonialController;
 
+
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactMessage;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,10 +23,6 @@ use App\Http\Controllers\TestimonialController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-
-use Illuminate\Support\Facades\Mail;
-use App\Mail\ContactMessage;
 
 
 Route::post('/send-email', function (\Illuminate\Http\Request $request) {
@@ -160,13 +159,12 @@ Route::get('/page/blogfull', function () {
 
 
 //MODAL
+
 Route::post('/modal/dismiss', function (Request $request) {
-    $key = $request->string('key')->trim();   // e.g. 'home'
+    $key = (string)$request->input('key', '');
     if ($key === '') {
         return response()->json(['ok' => false, 'error' => 'Missing key'], 422);
     }
-
-    // store dismissed modals in a session array
     $dismissed = session('dismissed_modals', []);
     $dismissed[$key] = true;
     session(['dismissed_modals' => $dismissed]);

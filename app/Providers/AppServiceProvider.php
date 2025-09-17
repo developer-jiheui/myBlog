@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +27,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        View::composer('*', function ($view) {
+            // Grab from session (default to empty array)
+            $dismissed = session('dismissed_modals', []);
+
+            // Share with all Blade views
+            $view->with('dismissedModals', $dismissed);
+        });
     }
 }

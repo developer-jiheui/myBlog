@@ -133,9 +133,86 @@ overlay.addEventListener("click", testimonialsModalFunc);
 //     // document.getElementById('openHomeModal')?.addEventListener('click', open);
 // });
 
+// document.addEventListener('DOMContentLoaded', () => {
+//
+//     document.querySelectorAll('[data-modal]').forEach((modal) => {
+//
+//         const overlay = modal.querySelector('.warning-overlay');
+//
+//         const open = () => {
+//             modal.classList.add('active');
+//             overlay?.classList.add('active');
+//             document.body.classList.add('modal-open');
+//         };
+//
+//         const close = () => {
+//             modal.classList.remove('active');
+//             overlay?.classList.remove('active');
+//             document.body.classList.remove('modal-open');
+//         };
+//
+//         modal.querySelectorAll('[data-close]').forEach(el => {
+//             el.addEventListener('click', close);
+//         });
+//
+//         document.addEventListener('keydown', (e) => {
+//             if (e.key === 'Escape') close();
+//         });
+//
+//         if (modal.hasAttribute('data-open-on-load')) {
+//             open();
+//         }
+//         // Handle "Don't show again" (session)
+//         modal.querySelectorAll('[data-dismiss-key]').forEach(btn => {
+//             btn.addEventListener('click', async () => {
+//                 const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+//                 const dismissUrl = document.querySelector('meta[name="modal-dismiss-url"]')?.getAttribute('content') || '';
+//
+//                 const key = btn.getAttribute('data-dismiss-key'); // e.g. "home"
+//                 try {
+//                     await fetch(dismissUrl, {
+//                         method: 'POST',
+//                         headers: {
+//                             'Content-Type': 'application/json',
+//                             'X-CSRF-TOKEN': csrf,
+//                             'X-Requested-With': 'XMLHttpRequest'
+//                         },
+//                         credentials: 'same-origin', //send session cookie
+//                         body: JSON.stringify({key})
+//                     });
+//                 } catch (e) {
+//                     // optional: toast/log
+//                     console.warn('Dismiss save failed:', e);
+//                 } finally {
+//                     close();
+//                 }
+//             });
+//         });
+//
+//         // Optional: expose open/close globally to trigger from buttons
+//         modal.dataset.controller = JSON.stringify({id: modal.id});
+//         window[`open_${modal.id}`] = open;
+//         window[`close_${modal.id}`] = close;
+//     });
+// });
+
 document.addEventListener('DOMContentLoaded', () => {
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '';
+    const dismissUrl = document.querySelector('meta[name="modal-dismiss-url"]')?.content || '';
+
+    // One Escape handler (global)
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        const active = document.querySelector('[data-modal].active');
+        if (!active) return;
+        active.classList.remove('active');
+        active.querySelector('.warning-overlay')?.classList.remove('active');
+        document.body.classList.remove('modal-open');
+    });
+
     document.querySelectorAll('[data-modal]').forEach((modal) => {
         const overlay = modal.querySelector('.warning-overlay');
+        const key = modal.getAttribute('data-modal-key'); // e.g. "home"
 
         const open = () => {
             modal.classList.add('active');
@@ -149,59 +226,42 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.classList.remove('modal-open');
         };
 
-        modal.querySelectorAll('[data-close]').forEach(el => {
-            el.addEventListener('click', close);
-        });
+        modal.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', close));
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') close();
-        });
-        // // Example: auto-open only on certain pages (add a flag in the page if desired)
-        // if (modal.id === 'homeModal') {
-        //     if (!sessionStorage.getItem('homeModalShown')) {
-        //         open();
-        //         sessionStorage.setItem('homeModalShown', 'true');
-        //     }
-        // } else {
-        //     // Optional: auto-open only if this modal has data-open-on-load
-        //     if (modal.hasAttribute('data-open-on-load')) {
-        //         open();
-        //     } else {
-        //         open();
-        //     }
-        // }
-
+        // ✅ Only open if Blade rendered data-open-on-load
         if (modal.hasAttribute('data-open-on-load')) {
             open();
-        } else {
-            open();
         }
-        // Handle "Don't show again" (session)
+
+        // “Don’t show again” → save to Laravel session (no localStorage)
         modal.querySelectorAll('[data-dismiss-key]').forEach(btn => {
             btn.addEventListener('click', async () => {
-                const key = btn.getAttribute('data-dismiss-key'); // e.g. "home"
+                const btnKey = btn.getAttribute('data-dismiss-key');
+                if (!btnKey) return;
+
                 try {
-                    await fetch(`{{ route('modal.dismiss') }}`, {
+                    await fetch(dismissUrl, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrf
+                            'X-CSRF-TOKEN': csrf,
+                            'X-Requested-With': 'XMLHttpRequest'
                         },
-                        body: JSON.stringify({key})
+                        credentials: 'same-origin', // send session cookie
+                        body: JSON.stringify({key: btnKey})
                     });
-                } catch (e) {
-                    // optional: toast/log
-                    console.warn('Dismiss save failed:', e);
+                } catch (err) {
+                    console.warn('Dismiss save failed:', err);
                 } finally {
+                    // After saving to session, close now; the next page load
+                    // Blade will see the session flag and NOT render data-open-on-load.
                     close();
                 }
             });
         });
 
-        // Optional: expose open/close globally to trigger from buttons
-        modal.dataset.controller = JSON.stringify({id: modal.id});
+        // Optional helpers
         window[`open_${modal.id}`] = open;
         window[`close_${modal.id}`] = close;
     });
 });
-
