@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         modal.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', close));
 
-        // ✅ Only open if Blade rendered data-open-on-load
+        //  Only open if Blade rendered data-open-on-load
         if (modal.hasAttribute('data-open-on-load')) {
             open();
         }
