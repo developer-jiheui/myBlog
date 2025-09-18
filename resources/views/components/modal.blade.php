@@ -21,11 +21,15 @@
         </button>
 
         @if($title)
-            <h3 class="warning-title">{{ $title }}</h3>
+            <div class="warning-title-container">
+                <h3 class="warning-title">{{ $title }}</h3>
+            </div>
         @endif
 
         @if($message)
-            <p class="warning-message">{!! nl2br(e($message)) !!}</p>
+            <div class="warning-message-container">
+                <p class="warning-message">{!! nl2br(e($message)) !!}</p>
+            </div>
         @endif
 
         {{-- Main content from the caller (optional) --}}

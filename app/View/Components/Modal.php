@@ -54,7 +54,8 @@ class Modal extends Component
 
         return match (true) {
             ($route === 'page.show' && request()->route('name') === 'home') || $route === 'home'
-            => "This site is under construction. You can use Guest Login to explore without signing up.",
+            => "This site is currently under construction.
+                More new features and pages will be available soon 🤗 — stay tuned!",
             $route === 'page.show' && $page === 'about'
             => "This page is being updated. Thanks for your patience!",
             $route === 'page.show' && $page === 'portfolio'

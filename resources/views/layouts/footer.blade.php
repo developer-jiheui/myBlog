@@ -1,16 +1,11 @@
-<!--
-  - custom js link
--->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJBgLFtPeoudAH2Wkaqn6lkQbY8TwZqxU&libraries=places"></script>
+{{-- Ionicons (needed for <ion-icon> tags) --}}
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
-<script src="{{ asset('js/script.js') }}"></script>
+{{-- Quill JS (load only if used; otherwise push from the page that needs it) --}}
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js" defer></script>
 
-<!--
-  - ionicon link
--->
-<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-
+{{-- Page-specific scripts --}}
+@stack('scripts')
 </body>
-
 </html>
