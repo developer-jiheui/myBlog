@@ -57,20 +57,6 @@
                             </figure>
 
                             <h3 class="project-title">{{ $p->title }}</h3>
-
-                            {{-- Show categories (labels) for each project, if you want chips under the title --}}
-                            @php
-                                $cats = DB::table('entity_labels')
-                                    ->where('target_type', 'portfolio')
-                                    ->where('target_id', $p->id)
-                                    ->where('kind', 'category')
-                                    ->orderBy('weight')
-                                    ->pluck('name')
-                                    ->toArray();
-                            @endphp
-                            @if(count($cats))
-                                <p class="project-category">{{ implode(' · ', $cats) }}</p>
-                            @endif
                         </a>
 
                         {{-- Interactions: like/edit/delete --}}

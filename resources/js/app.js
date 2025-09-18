@@ -1,4 +1,6 @@
-import './bootstrap';
+//import './bootstrap';
+
+console.log("app.js loaded, DOM state:", document.readyState);
 
 // Helper
 function elementToggleFunc(el) {
@@ -145,3 +147,39 @@ document.addEventListener('DOMContentLoaded', () => {
         window[`close_${modal.id}`] = close;
     });
 });
+
+
+//Wrap modal for DOM to be ready
+function initModals() {
+    console.log('Modal init running');
+
+    document.querySelectorAll('[data-modal]').forEach((modal) => {
+        const overlay = modal.querySelector('.warning-overlay');
+
+        const open = () => {
+            modal.classList.add('active');
+            overlay?.classList.add('active');
+            document.body.classList.add('modal-open');
+        };
+        const close = () => {
+            modal.classList.remove('active');
+            overlay?.classList.remove('active');
+            document.body.classList.remove('modal-open');
+        };
+
+        modal.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', close));
+        // auto-open if Blade added the flag
+        if (modal.hasAttribute('data-open-on-load')) open();
+
+        // expose helpers for quick testing
+        window[`open_${modal.id}`] = open;
+        window[`close_${modal.id}`] = close;
+    });
+}
+
+// run immediately if DOM is ready, otherwise wait
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initModals, {once: true});
+} else {
+    initModals();
+}

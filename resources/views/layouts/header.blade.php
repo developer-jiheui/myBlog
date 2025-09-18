@@ -23,7 +23,7 @@
 
     {{-- assets via Vite (source: resources/css/app.css, resources/js/app.js) --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
+    
     {{-- Page-specific head injections --}}
     @stack('head')
 </head>
