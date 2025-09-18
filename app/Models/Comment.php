@@ -9,12 +9,22 @@ use Illuminate\Support\Facades\DB;
 
 class Comment extends Model
 {
-    use HasFactory;
-    protected $table = 'COMMENT';
-    protected $primaryKey = 'COMMENT_ID';
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 
+    public function images()
+    {
+        return $this->hasMany(BlogImage::class);
+    }
+
+    public function labels()
+    {
+        return $this->morphMany(EntityLabel::class, 'target', 'target_type', 'target_id')
+            ->where('target_type', 'blog');
+    }
     public static function displayComments(){
-        $results = DB::table('COMMENT')->select('TITLE')->distinct()->get()->toArray();
-        return $results;
+     return DB::table('comment')->select('title')->distinct()->get()->toArray();
     }
 }

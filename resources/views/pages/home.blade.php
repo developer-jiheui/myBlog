@@ -1,12 +1,24 @@
 @extends('layouts.main')
 @section('content')
+    @php
+        // Pull super admin (USER_TYPE = 0 ) and recent content
+        $superAdmin = \App\Models\User::where('USER_TYPE', 0)->first();
+        $latestBlogs = \App\Models\Blog::orderByDesc('CREATED_AT')->limit(3)->get();
+        $recentWorks = \App\Models\Portfolio::orderByDesc('UPDATED_AT')->limit(6)->get();
+        $testimonials = \App\Models\Testimonial::where('pinned',1)->get();
+    @endphp
+
     <article class="home  active" data-page="home">
 
         <header>
-            <!-- <h2 class="h2 article-title">About me</h2> -->
+            <h2 class="h2 article-title">About me</h2>
         </header>
 
         <section class="about-text">
+            <p>
+                {{ $superAdmin->BIO ?? 'I build fast, modern web apps and elegant UI.' }}
+            </p>
+
         </section>
 
         <!--
@@ -15,27 +27,73 @@
 
         <section class="service">
 
-            <h3 class="h3 service-title">Latest Blogs</h3>
+            <h3 class="h3 service-title">What i'm doing</h3>
 
             <ul class="service-list">
-                @foreach(\App\Models\Blog::latest()->take(4)->get() as $blogItem)
-                    <a class="service-item" href="{{ route('page.blogfull',['id'=>$blogItem['BLOG_ID']]) }}">
-                        <div class="service-icon-box">
-                            <img src="{{ $blogItem['IMAGE_URL'] ?? '/images/default-blog.jpeg' }}" alt="project icon" style = "max-width: 120px; max-height: 120px;">
-                        </div>
 
-                        <div class="service-content-box">
-                            <h4 class="h4 service-item-title">{{ $blogItem->TITLE }}</h4>
+                <li class="service-item">
 
-                            <p class="service-item-text">
-                                {{ \Illuminate\Support\Str::limit(strip_tags($blogItem['CONTENTS']), 100) }}
-                            </p>
+                    <div class="service-icon-box">
+                        <img src="{{ asset('images/icon-design.svg') }}" alt="design icon" width="40">
+                    </div>
 
-                        </div>
-                    </a>
+                    <div class="service-content-box">
+                        <h4 class="h4 service-item-title">Web design</h4>
 
+                        <p class="service-item-text">
+                            The most modern and high-quality design made at a professional level.
+                        </p>
+                    </div>
 
-                @endforeach
+                </li>
+
+                <li class="service-item">
+
+                    <div class="service-icon-box">
+                        <img src="{{ asset('images/icon-dev.svg') }}" alt="Web development icon" width="40">
+                    </div>
+
+                    <div class="service-content-box">
+                        <h4 class="h4 service-item-title">Web development</h4>
+
+                        <p class="service-item-text">
+                            High-quality development of sites at the professional level.
+                        </p>
+                    </div>
+
+                </li>
+
+                <li class="service-item">
+
+                    <div class="service-icon-box">
+                        <img src="{{ asset('images/icon-app.svg') }}" alt="mobile app icon" width="40">
+                    </div>
+
+                    <div class="service-content-box">
+                        <h4 class="h4 service-item-title">Mobile apps</h4>
+
+                        <p class="service-item-text">
+                            Professional development of applications for iOS and Android.
+                        </p>
+                    </div>
+
+                </li>
+
+                <li class="service-item">
+
+                    <div class="service-icon-box">
+                        <img src="{{ asset('images/icon-photo.svg') }}" alt="camera icon" width="40">
+                    </div>
+
+                    <div class="service-content-box">
+                        <h4 class="h4 service-item-title">Photography</h4>
+
+                        <p class="service-item-text">
+                            I make high-quality photos of any category at a professional level.
+                        </p>
+                    </div>
+
+                </li>
 
             </ul>
 
@@ -43,45 +101,127 @@
 
 
         <!--
-          - clients
+          - testimonials
         -->
 
-        <section class="clients">
+        <section class="testimonials">
+            <h3 class="h3 testimonials-title">Testimonials</h3>
+            <ul class="testimonials-list has-scrollbar">
+                @forelse($testimonials as $t)
+                    <li class="testimonials-item">
+                        <div class="content-card" data-testimonials-item
+                             data-author-title="{{ $t->author_title ?? '' }}">
 
-            <h3 class="h3 clients-title">Recent works</h3>
+                            <figure class="testimonials-avatar-box">
+                                <img data-testimonials-avatar
+                                     src="{{ $t->author_avatar_url ? asset($t->author_avatar_url) : asset('images/default-avatar.png') }}"
+                                     alt="{{ $t->author_name }}"
+                                     width="60" data-testimonials-avatar>
+                            </figure>
 
-            <ul class="clients-list has-scrollbar">
+                            <h4 class="h4 testimonials-item-title" data-testimonials-title>{{ $t->author_name }}</h4>
 
-                @foreach(\App\Models\Portfolio::latest()->take(6)->get() as $portfolio)
-
-                            <a href="{{  route('page.portfoliofull',['id'=> $portfolio->PORTFOLIO_ID])}}">
-                                <img src="{{ asset($portfolio->IMAGE_URL ?? 'images/default-blog.png') }}"
-                                     style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px;">
-                            </a>
-                        </li>
-                @endforeach
+                            <div class="testimonials-text" data-testimonials-text>
+                                <p>
+                                    {{$t->body}}
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                @empty
+                    <p>
+                        NO Testimonial yet
+                    </p>
+                @endforelse
             </ul>
 
         </section>
-    </article>
-    @guest
-        {{-- Show login button when user is not logged in --}}
-        <a href="{{ route('page.show', ['name' => 'login']) }}" class="edit-page-button">
-            <ion-icon name="log-in-outline" role="img" aria-label="Login"></ion-icon>
-            Log In
-        </a>
-    @endguest
 
-    @auth
-        {{-- Show profile photo when logged in --}}
-        <a href="{{ route('page.show', ['name' => 'profile']) }}" class="edit-page-button">
-            @if(Auth::user()->AVATAR)
-                <img src="{{ asset(Auth::user()->AVATAR) }}"
-                     alt="Profile"
-                     style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
-            @else
-                <ion-icon name="person-circle-outline" role="img" aria-label="Profile"></ion-icon>
-            @endif
-        </a>
-    @endauth
+
+        <!--
+          - testimonials modal
+        -->
+
+        <div class="modal-container" data-modal-container>
+            <div class="overlay" data-overlay></div>
+            <section class="testimonials-modal">
+                <button class="modal-close-btn" data-modal-close-btn>
+                    <ion-icon name="close-outline"></ion-icon>
+                </button>
+
+                <div class="modal-img-wrapper">
+                    <figure class="modal-avatar-box">
+                        <img src="" alt="" width="80" data-modal-img>
+                    </figure>
+                    <div class="modal-quote">
+                        <img src="{{ asset("/images/icon-quote.svg") }}" alt="quote icon">
+                    </div>
+                </div>
+
+                <div class="modal-content">
+                    <h4 class="modal-title" data-modal-title></h4>
+                    <p class="modal-author-title" data-modal-author-title></p>
+                    <div class="modal-text" data-modal-text>
+                        <p></p>
+                    </div>
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!--
+          - clients
+        -->
+
+        <section class="recent-works">
+            <h3 class="h3 service-title">Recent works</h3>
+
+            <div class="recent-scroll-wrap">
+
+                <ul class="recent-list has-scrollbar" id="recent-list">
+                    @foreach (\App\Models\Portfolio::latest()->take(12)->get() as $p)
+                        <li class="recent-item">
+                            <a href="{{ route('page.portfoliofull', ['id' => $p->id]) }}" class="recent-card">
+                                <figure class="recent-thumb">
+                                    <img
+                                        src="{{ asset($p->image_url ?? 'images/default-icon.svg') }}"
+                                        alt="{{ $p->title }}"
+                                        loading="lazy"
+                                    >
+                                </figure>
+
+                                <div class="recent-body">
+                                    <h4 class="h5 recent-title">{{ $p->title }}</h4>
+                                    <p class="recent-desc">
+                                        {{ \Illuminate\Support\Str::limit(strip_tags($p->description), 80) }}
+                                    </p>
+                                </div>
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+
+
+            </div>
+        </section>
+
+
+    </article>
+    <x-modal id="homeModal" variant="warning"
+             size="md" :openOnLoad="!($dismissedModals['home'] ?? false)">
+        <x-slot:actions>
+            <form method="POST" action="{{ route('guest.login') }}" id="warning-form">
+                @csrf
+                <button type="submit" class="guest-login-btn">Guest Login</button>
+            </form>
+
+            <label class="warning-dismiss">
+                <input type="checkbox" data-dismiss-key="home" id="dont-show-home">
+                Don’t show this message again
+            </label>
+        </x-slot:actions>
+    </x-modal>
+
 @endsection

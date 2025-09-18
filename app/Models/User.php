@@ -2,55 +2,68 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Testimonial;
+use App\Models\AccessHistory;
 
 class User extends Authenticatable
 {
-    use Notifiable;
-
-    protected $table = 'USER'; // Custom table name
-
-    protected $primaryKey = 'USER_ID'; // Custom primary key
-
-    public $timestamps = false; // Disable created_at and updated_at columns
+    use HasFactory, Notifiable;
 
     protected $fillable = [
-        'EMAIL',
-        'PW',
-        'USER_TYPE',
-        'FIRST_NAME',
-        'LAST_NAME',
-        'REGISTER_TYPE',
-        'REGISTER_DT',
-        'ADDRESS',
-        'PHONE_NUM',
-        'BIO',
-        'JOB_TITLE',
-        'BIRTHDAY',
-        'INSTAGRAM_URL',
-        'LINKEDIN_URL',
-        'GITHUB_URL',
-        'AVATAR'
+        'email', 'password', 'user_type', 'first_name', 'last_name',
+        'avatar', 'register_type', 'address', 'phone_num', 'bio',
+        'job_title', 'birthday', 'instagram_url', 'linkedin_url', 'github_url'
     ];
 
     protected $hidden = [
-        'PW',
+        'password',
+        'remember_token',
     ];
 
     /**
-     * Laravel expects `password` column. So override it to use `PW`.
+     * Casts
      */
-    public function getAuthPassword()
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'birthday'          => 'date',
+    ];
+
+    /**
+     * Relationships
+     */
+    public function comments()
     {
-        return $this->PW;
+        return $this->hasMany(Comment::class);
+    }
+
+    public function testimonials()
+    {
+        return $this->hasMany(Testimonial::class, 'author_user_id');
+    }
+
+    public function accessHistories()
+    {
+        return $this->hasMany(AccessHistory::class);
     }
 
     /**
-     * Set email as the identifier for login.
+     * Auth methods
      */
+
+    // =========================================
+    // Authentication overrides
+    // =========================================
+
+    public function getAuthPassword()
+    {
+        return $this->password; // <-- was broken in your snippet
+    }
+
     public function getAuthIdentifierName()
     {
-        return 'EMAIL';
+        return 'email'; // login by email
     }
 }

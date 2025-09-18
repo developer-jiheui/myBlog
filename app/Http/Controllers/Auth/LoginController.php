@@ -13,28 +13,27 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
-        // Validate the login form
+        // Validate
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+            'email'    => ['required', 'email'],
+            'password' => ['required', 'string'],
         ]);
 
-        // Attempt login
-        if (Auth::attempt($credentials, $request->filled('remember'))) {
+        // Attempt login on the default "web" guard
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+            // Regenerate session for security
             $request->session()->regenerate();
 
-            // Redirect based on role
-            // 0 admin
-            // 1 common user
-            $user = Auth::user();
-            if ($user->USER_TYPE === '0' || (int)$user->USER_TYPE === 0) {
-                return redirect()->intended('/admin');
-            }
+//            // Role-based redirect (0 = admin, 1 = user)
+//            $user = Auth::user();
+//            if ((int) $user->user_type === 0) {
+//                return redirect()->intended('/admin');
+//            }
 
             return redirect()->intended('/');
         }
 
-        // Login failed
+        // Failed auth
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ])->onlyInput('email');

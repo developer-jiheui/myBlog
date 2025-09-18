@@ -16,8 +16,11 @@ class DatabaseSeeder extends Seeder
     {
             $this->call([
                 UserSeeder::class,
-                BlogSeeder::class,
+                TechSeeder::class,
                 PortfolioSeeder::class,
+                BlogSeeder::class,
+                TestimonialSeeder::class,
+                CategorySeeder::class,
             ]);
 
             // Production: run adminSeeder and basic blog, portfolio.

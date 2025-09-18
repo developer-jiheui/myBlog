@@ -107,4 +107,24 @@
             });
         });
     </script>
+    @guest
+        {{-- Show login button when user is not logged in --}}
+        <a href="{{ route('page.show', ['name' => 'login']) }}" class="edit-page-button">
+            <ion-icon name="log-in-outline" role="img" aria-label="Login"></ion-icon>
+            Log In
+        </a>
+    @endguest
+
+    @auth
+        {{-- Show profile photo when logged in --}}
+        <a href="{{ route('page.show', ['name' => 'profile']) }}" class="edit-page-button">
+            @if(Auth::user()->AVATAR)
+                <img src="{{ asset(Auth::user()->AVATAR) }}"
+                     alt="Profile"
+                     style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
+            @else
+                <ion-icon name="person-circle-outline" role="img" aria-label="Profile"></ion-icon>
+            @endif
+        </a>
+    @endauth
 @endsection

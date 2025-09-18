@@ -6,6 +6,7 @@
 -->
 
 <main>
+    
 
     <!--
       - #SIDEBAR
@@ -20,8 +21,8 @@
     <div class="main-content">
         {{--TODO : authenticated user type and change it to admin navbar or normal user navbar        --}}
 
-            @include('layouts.navbar')
-            @yield('navbar')
+        @include('layouts.navbar')
+        @yield('navbar')
 
 
         <!--
@@ -29,8 +30,9 @@
         -->
         @yield('content')
 
+
     </div>
-    {{--    @include('layouts.edit')--}}
+
 </main>
 
 @include('layouts.footer')
