@@ -11,7 +11,7 @@
 
         $user = Auth::user();
 
-        if (!$user || ($isEdit && $user->USER_ID !== $blogItem->USER_ID) || (!$isEdit && $user->USER_TYPE != 0)) {
+        if (!$user || ($isEdit && $user->user_id !== $blogItem->user_id) || (!$isEdit && $user->user_type != 0)) {
             abort(403); // Forbidden
         }
     @endphp
@@ -36,7 +36,7 @@
 
             <div class="input-wrapper">
                 <label for="title" class="form-label">Title</label>
-                <input name="title" id="title" class="form-input" value="{{ $blogItem['TITLE'] ?? '' }}" required>
+                <input name="title" id="title" class="form-input" value="{{ $blogItem['title'] ?? '' }}" required>
             </div>
 
             <!-- Hidden input to hold HTML content -->
@@ -88,7 +88,7 @@
             });
 
             // Load existing content if editing
-            quill.root.innerHTML = `{!! addslashes($blogItem['CONTENTS'] ?? '') !!}`;
+            quill.root.innerHTML = `{!! addslashes($blogItem['contents'] ?? '') !!}`;
 
             // Custom image upload + resize
             quill.getModule('toolbar').addHandler('image', () => {

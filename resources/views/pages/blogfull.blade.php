@@ -3,7 +3,7 @@
     <article class="blog-full active" data-page="blog">
         @php
             try {
-                $blogItem = \App\Models\Blog::find($_GET['id']);
+                $blogItem = \App\Models\Blog::find(request('id'));
             }
             catch (Exception $e) {
                 http_response_code(404);
@@ -52,13 +52,13 @@
             <div class="separator"></div>
             <div class="blog-footer">
                 @php
-                    $comments = \App\Models\Comment::where('blog_id','=',$_GET['id'])->get();
+                    $comments = \App\Models\Comment::where('blog_id','=',request('id'))->get();
                 @endphp
                 <div class="comment-count">
                     @if (empty($comments))
                         <div class="comment-count-text">No responses yet</div>
                     @else
-                        <div class="comment-count-text">Responses ({{$comments->count()}})</div>
+                        <div class="comment-count-text">Responses ( {{$comments->count()}} )</div>
                     @endif
                 </div>
                 @auth
@@ -79,16 +79,18 @@
                                 @if ($name)
                                     {{ $name }}
                                 @else
-                                    write a response
+                                    No Name
                                 @endif
                             </div>
                         </div>
-                        <div class="comment-text-container">
-                            <form method=post action="{{route('page.blog.comment')}}">
+                        <div class="">
+                            <form method=post action="{{route('page.blog.comment')}}" class="comment-text-container">
                                 @csrf
+                                <div class="comment-text-area">
                                 <textarea name=content required class="comment-input-text"
                                           placeholder="what's your thoughts?"></textarea>
-                                <input type=hidden name=blog_id value="{{$_GET['id']}}">
+                                    <input type=hidden name=blog_id value="{{request('id')}}">
+                                </div>
                                 <div class="comment-btn-container">
                                     <button class="comment-submit-btn" type=submit>Respond</button>
                                 </div>
@@ -108,13 +110,16 @@
                                 write a response
                             </div>
                         </div>
-                        <div class="comment-input-container">
-                            <div role="textbox" class="comment-input-text" name=content>
-                                what's your thoughts?
-                            </div>
-                            <div class="comment-btn-container">
-                                <button class="comment-submit-btn" type=submit>Respond</button>
-                            </div>
+                        <div class="comment-text-container">
+                            <form method=post action="{{route('page.blog.comment')}}">
+                                @csrf
+                                <textarea name=content required class="comment-input-text"
+                                          placeholder="what's your thoughts?"></textarea>
+                                <input type=hidden name=blog_id value="{{request('id')}}">
+                                <div class="comment-btn-container">
+                                    <button class="comment-submit-btn" type=submit>Respond</button>
+                                </div>
+                            </form>
                         </div>
 
                     </div>
@@ -131,7 +136,7 @@
                                 $commenter = \App\Models\User::find($comment['user_id']);
                             @endphp
                             <div class="comment-item">
-                                <div class="comment-header">
+                                <div class="comment-header comment-user-info">
                                     <div class="comment-avatar">
                                         <img alt
                                              src="{{asset($commenter['avatar']??'images/default-avatar.png')}}">
@@ -155,8 +160,9 @@
                                     <div class="comment-btn-container">
                                         @auth
                                             <div class=project-buttons>
+                                                {{--TODO : USE POLICIES--}}
 
-                                                @if(Auth::user()->user_type==0||Auth::user()->id=$commenter['user_id'])
+                                                @if(Auth::user()->user_type==0||Auth::user()->id=$commenter->id)
                                                     <form
                                                         action="{{route('page.blog.comment.delete', ['id' => $comment['id']])}}"
                                                         method=post>
@@ -169,7 +175,7 @@
                                                         </button>
                                                     </form>
                                                 @endif
-                                                @if(Auth::user()->id=$commenter->id)
+                                                @if(Auth::user()->id==$commenter->id)
                                                     <details>
                                                         <summary class="icon-box">
                                                             <ion-icon name="pencil-outline" role="img"
@@ -180,12 +186,18 @@
                                                               action="{{route('page.blog.comment.update',['id'=>$comment['comment_id']])}}">
                                                             @csrf
                                                             @method('patch')
-                                                            <fieldset>
-                                                                <legend>Edit your comment&hellip;</legend>
-                                                                <textarea name=content
-                                                                          required>{{$comment['contents']}}</textarea>
-                                                                <button type=submit>Edit comment</button>
-                                                            </fieldset>
+                                                            <div class="comment-text-container">
+                                                                <textarea name=content required
+                                                                          class="comment-input-text"
+                                                                          placeholder="{{$comment['contents']}}"></textarea>
+                                                                <input type=hidden name=blog_id
+                                                                       value="{{request('id')}}">
+                                                                <div class="comment-btn-container">
+                                                                    <button class="comment-submit-btn" type=submit>
+                                                                        Edit
+                                                                    </button>
+                                                                </div>
+                                                            </div>
                                                         </form>
                                                     </details>
                                                 @endif
@@ -206,25 +218,6 @@
 
 
     </article>
-
-    @auth
-        <form method=post action="{{route('page.blog.comment')}}">
-            @csrf
-            <fieldset>
-                <legend>Add a comment&hellip;</legend>
-                <textarea name=content required></textarea>
-                <input type=hidden name=blog_id value="{{$_GET['id']}}">
-                <button type=submit>Add comment</button>
-            </fieldset>
-        </form>
-    @endauth
-    @guest
-        {{-- Show login button when user is not logged in --}}
-        <a href="{{ route('page.show', ['name' => 'login']) }}" class="edit-page-button">
-            <ion-icon name="log-in-outline" role="img" aria-label="Login"></ion-icon>
-            Log In
-        </a>
-    @endguest
 
     @auth
         {{-- Show profile photo when logged in --}}
