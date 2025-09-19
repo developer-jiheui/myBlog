@@ -23,7 +23,12 @@
 
     {{-- assets via Vite (source: resources/css/app.css, resources/js/app.js) --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
+
+
+    {{--    TRIX for portfolio--}}
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
+    <script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
+
     {{-- Page-specific head injections --}}
     @stack('head')
 </head>

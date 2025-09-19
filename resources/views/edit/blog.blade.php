@@ -24,7 +24,7 @@
         </header>
 
         <form class="form"
-              action="{{ $isEdit ? route('edit.blog.update', ['id' => $blogItem->BLOG_ID]) : route('edit.blog.create') }}"
+              action="{{ $isEdit ? route('edit.blog.update', ['id' => $blogItem->id]) : route('edit.blog.create') }}"
               method="post"
               enctype="multipart/form-data">
             @csrf
@@ -80,7 +80,7 @@
                 placeholder: 'Write your blog post...',
                 modules: {
                     toolbar: [
-                        [{ header: [1, 2, false] }],
+                        [{header: [1, 2, false]}],
                         ['bold', 'italic', 'underline'],
                         ['image', 'link', 'code-block'],
                     ]

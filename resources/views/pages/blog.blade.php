@@ -18,11 +18,11 @@
                             </figure>
 
                             <div class="blog-content">
-                                <div class="blog-meta">
-{{--                                    <p class="blog-category">By User {{ $blogItem['user_id'] }}</p>--}}
-                                    <span class="dot"></span>
-                                    <time>{{ \Carbon\Carbon::parse($blogItem['created_at'])->format('M d, Y') }}</time>
-                                </div>
+                                {{--                                <div class="blog-meta">--}}
+                                {{--                                    <p class="blog-category">By User {{ $blogItem['user_id'] }}</p>--}}
+                                {{--                                    <span class="dot"></span>--}}
+                                {{--                                    <time>{{ \Carbon\Carbon::parse($blogItem['created_at'])->format('M d, Y') }}</time>--}}
+                                {{--                                </div>--}}
 
                                 <h3 class="h3 blog-item-title">{{ $blogItem['title'] }}</h3>
 

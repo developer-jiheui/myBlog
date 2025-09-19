@@ -1193,8 +1193,10 @@ div.project-interact { /* for admin; icons display on top of each other otherwis
     position: absolute;
 }
 
+
 .project-description {
     white-space: pre-wrap;
+    font-size: var(--fs-5);
     color: var(--white-2);
 }
 
@@ -1312,9 +1314,10 @@ a.icon-box:hover::before, a.icon-box:focus::before, button.icon-box:hover::befor
 }
 
 
-.blog-full, .blog-full textarea, .blog-full button {
+.blog-full, .blog-full textarea, blog-full button {
     color: #fff;
 }
+
 
 .blog-comment h4 * {
     display: inline;
@@ -1322,6 +1325,92 @@ a.icon-box:hover::before, a.icon-box:focus::before, button.icon-box:hover::befor
 
 .blog-comment p {
     white-space: pre-wrap;
+}
+
+.blog-body {
+    min-height: 30vh;
+}
+
+.blog-footer {
+    min-height: 10vh;
+}
+
+.comment-input-container {
+    min-height: 8vh;
+}
+
+.comment-user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+}
+
+.comment-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: hsl(0deg 0% 70% / 50%);
+    border: solid 5px var(--eerie-black-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.comment-avatar > img {
+    width: 50px;
+    aspect-ratio: 1;
+}
+
+.comment-user {
+    font-size: var(--fs-5)
+}
+
+.comment-text-container {
+    margin-top: 10px;
+    height: 100px;
+    background-color: hsl(0deg 0% 30% / 30%);
+    border-radius: 10px;
+    padding: 15px;
+    position: relative;
+}
+
+.blog-full textarea {
+    border: none;
+    outline: none;
+    appearance: none;
+    resize: none;
+}
+
+
+.comment-input-text {
+    font-size: var(--fs-7);
+
+}
+
+.comment-input-text:focus, .comment-input-text:focus-visible, .comment-input-text:focus-within {
+    outline: 0;
+    box-shadow: none;
+}
+
+.comment-btn-container {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+
+}
+
+.comment-submit-btn {
+    background-color: var(--eerie-black-2);
+    width: fit-content;
+    padding: 10px;
+    font-size: var(--fs-5);
+    height: 30px;
+    border-radius: 10px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* overriding quill styles */
@@ -2275,6 +2364,28 @@ textarea.form-input::-webkit-resizer {
     transform: translateY(-2px);
 }
 
+.testimonial-button {
+    background: var(--bg-gradient-yellow-2);
+    color: var(--white-1);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 18px;
+    border-radius: 999px;
+    box-shadow: 0 8px 20px rgb(0 0 0 / 40%);
+    z-index: 9999;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.testimonial-button:hover {
+    background: var(--bg-gradient-yellow-1);
+    color: var(--white-1);
+    transform: translateY(-2px);
+}
+
 .admin-table {
     width: 100%;
     border-collapse: separate;
@@ -2991,24 +3102,6 @@ textarea.form-input::-webkit-resizer {
     width: 16px;
     height: 16px;
     cursor: pointer;
-}
-
-/* Close button */
-
-.modal-close-btn {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: var(--onyx);
-    color: var(--white-2);
-    border-radius: 10px;
-    border: 0;
-    width: 34px;
-    height: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: .9;
 }
 
 .modal-close-btn:hover {
