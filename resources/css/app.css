@@ -1327,6 +1327,12 @@ a.icon-box:hover::before, a.icon-box:focus::before, button.icon-box:hover::befor
     white-space: pre-wrap;
 }
 
+/* **************************************  */
+
+.delete-btn {
+    color: white;
+}
+
 .blog-body {
     min-height: 30vh;
 }

@@ -24,7 +24,7 @@
                 <div class="blog-btn-container">
                     @auth
                         @if(Auth::user()->USER_TYPE==0&&Auth::user()->id==$blogItem['user_id'])
-                            <div class=project-full-interact>
+                            <div class=project-buttons>
                                 <a class="icon-box" href="{{route('edit.blog', ['id' => $blogItem['blog_id']])}}">
                                     <ion-icon name="pencil-outline" role="img" class="md hydrated"
                                               aria-label="Edit"></ion-icon>
@@ -33,7 +33,7 @@
                                       method=post>
                                     @csrf
                                     @method('delete')
-                                    <button class="icon-box">
+                                    <button class="icon-box delete-btn">
                                         <ion-icon name="trash-outline" role="img" class="md hydrated"
                                                   aria-label="Delete"></ion-icon>
                                     </button>
@@ -52,7 +52,7 @@
             <div class="separator"></div>
             <div class="blog-footer">
                 @php
-                    $comments = \App\Models\Comment::where('blog_id','=',$_GET['id'])->get()->toArray();
+                    $comments = \App\Models\Comment::where('blog_id','=',$_GET['id'])->get();
                 @endphp
                 <div class="comment-count">
                     @if (empty($comments))
@@ -121,6 +121,8 @@
 
                 @endguest
 
+                <div class="separator"></div>
+
                 <div class="comments-list">
 
                     @if (!empty($comments))
@@ -128,47 +130,74 @@
                             @php
                                 $commenter = \App\Models\User::find($comment['user_id']);
                             @endphp
-                            <section class=blog-comment>
-                                <h4>
-                                    <figure class=avatar-box><img alt
-                                                                  src="{{asset($commenter['avatar']??'images/my-avatar.png')}}">
-                                    </figure> {{$commenter['first_name']}} {{$commenter['last_name']}} at
-                                    <time>{{$comment['created_at']}}</time>
-                                </h4>
-                                @auth
+                            <div class="comment-item">
+                                <div class="comment-header">
+                                    <div class="comment-avatar">
+                                        <img alt
+                                             src="{{asset($commenter['avatar']??'images/default-avatar.png')}}">
+                                    </div>
+                                    <div class="commenter-info">
+                                        <div class="commenter-name comment-user">
+                                            @php
+                                                $name = trim(($commenter->first_name ?? '') . ' ' . ($commenter->last_name ?? ''));
+                                            @endphp
 
-                                    @if(Auth::user()->user_type==0)
-                                        <form action="{{route('page.blog.comment.delete', ['id' => $comment['id']])}}"
-                                              method=post>
-                                            @csrf
-                                            @method('delete')
-                                            <button class="icon-box">
-                                                <ion-icon name="trash-outline" role="img" class="md hydrated"
-                                                          aria-label="Delete"></ion-icon>
-                                            </button>
-                                        </form>
-                                    @endif
-                                    @if(Auth::user()->id=$commenter['user_id'])
-                                        <details>
-                                            <summary class="icon-box">
-                                                <ion-icon name="pencil-outline" role="img" class="md hydrated"
-                                                          aria-label="Edit"></ion-icon>
-                                            </summary>
-                                            <form method=post
-                                                  action="{{route('page.blog.comment.update',['id'=>$comment['comment_id']])}}">
-                                                @csrf
-                                                @method('patch')
-                                                <fieldset>
-                                                    <legend>Edit your comment&hellip;</legend>
-                                                    <textarea name=content required>{{$comment['contents']}}</textarea>
-                                                    <button type=submit>Edit comment</button>
-                                                </fieldset>
-                                            </form>
-                                        </details>
-                                    @endif
-                                @endauth
-                                <p>{{$comment['contents']}}
-                            </section>
+                                            @if ($name)
+                                                {{ $name }}
+                                            @else
+                                                No Name
+                                            @endif
+                                        </div>
+                                        <div class="comment-day">
+                                            <time>{{ $comment->created_at->diffForHumans() }}</time>
+                                        </div>
+                                    </div>
+                                    <div class="comment-btn-container">
+                                        @auth
+                                            <div class=project-buttons>
+
+                                                @if(Auth::user()->user_type==0||Auth::user()->id=$commenter['user_id'])
+                                                    <form
+                                                        action="{{route('page.blog.comment.delete', ['id' => $comment['id']])}}"
+                                                        method=post>
+                                                        @csrf
+                                                        @method('delete')
+                                                        <button class="icon-box delete-btn">
+                                                            <ion-icon name="trash-outline" role="img"
+                                                                      class="md hydrated"
+                                                                      aria-label="Delete"></ion-icon>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                                @if(Auth::user()->id=$commenter->id)
+                                                    <details>
+                                                        <summary class="icon-box">
+                                                            <ion-icon name="pencil-outline" role="img"
+                                                                      class="md hydrated"
+                                                                      aria-label="Edit"></ion-icon>
+                                                        </summary>
+                                                        <form method=post
+                                                              action="{{route('page.blog.comment.update',['id'=>$comment['comment_id']])}}">
+                                                            @csrf
+                                                            @method('patch')
+                                                            <fieldset>
+                                                                <legend>Edit your comment&hellip;</legend>
+                                                                <textarea name=content
+                                                                          required>{{$comment['contents']}}</textarea>
+                                                                <button type=submit>Edit comment</button>
+                                                            </fieldset>
+                                                        </form>
+                                                    </details>
+                                                @endif
+                                            </div>
+                                        @endauth
+                                    </div>
+                                </div>
+                                <div class="comment-body">
+                                    {{$comment['contents']}}
+                                </div>
+                            </div>
+                            <div class="separator"></div>
                         @endforeach
                     @endif
                 </div>
