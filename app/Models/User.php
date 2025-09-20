@@ -12,6 +12,9 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    protected $table = 'users';
+    protected $primaryKey = 'id';
+
     protected $fillable = [
         'email', 'password', 'user_type', 'first_name', 'last_name',
         'avatar', 'register_type', 'address', 'phone_num', 'bio',
@@ -28,7 +31,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'birthday'          => 'date',
+        'birthday' => 'date',
     ];
 
     /**

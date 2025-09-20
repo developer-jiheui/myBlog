@@ -1,4 +1,3 @@
-
 <div id="profile-modal"
      class="sheet-modal"
      data-modal-container
@@ -11,14 +10,17 @@
     <div class="sheet-panel" role="document">
         <header class="sheet-header">
             <div class="sheet-title-wrap">
-                <img class="sheet-avatar" src="{{ asset(Auth::user()->avatar ?? 'images/default-avatar.png') }}" alt="Avatar">
+                <img class="sheet-avatar" src="{{ asset(Auth::user()->avatar ?? 'images/default-avatar.png') }}"
+                     alt="Avatar">
                 <div>
                     <h2 id="profile-modal-title">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</h2>
                     <p class="muted">{{ Auth::user()->job_title ?? 'Member' }}</p>
                 </div>
             </div>
             <button class="sheet-close" data-close-profile aria-label="Close">
-                <svg width="22" height="22" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24">
+                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
             </button>
         </header>
 
@@ -36,7 +38,8 @@
 
                     <label class="field">
                         <span>Display Name</span>
-                        <input type="text" name="name" value="{{ old('name', trim(Auth::user()->first_name.' '.Auth::user()->last_name)) }}">
+                        <input type="text" name="name"
+                               value="{{ old('name', trim(Auth::user()->first_name.' '.Auth::user()->last_name)) }}">
                     </label>
 
                     <label class="field">
@@ -86,7 +89,7 @@
                 <div class="divider"></div>
                 <h3 class="h3">Your recent testimonials</h3>
                 <ul class="list">
-                    @foreach(\App\Models\Testimonial::where('author_user_id', auth()->id())->latest()->take(5)->get() as $t)
+                    @foreach(\App\Models\Testimonial::where('author_user_id', Auth::user()->id)->latest()->take(5)->get() as $t)
                         <li class="list-item">
                             <div class="truncate">{{ \Illuminate\Support\Str::limit($t->body, 120) }}</div>
                             <small class="muted">{{ $t->created_at->diffForHumans() }}</small>
@@ -100,10 +103,15 @@
                 <div class="table-wrap">
                     <table class="table">
                         <thead>
-                        <tr><th>Signed In</th><th>Signed Out</th><th>IP</th><th>Session</th></tr>
+                        <tr>
+                            <th>Signed In</th>
+                            <th>Signed Out</th>
+                            <th>IP</th>
+                            <th>Session</th>
+                        </tr>
                         </thead>
                         <tbody>
-                        @foreach(\App\Models\AccessHistory::where('user_id', auth()->id())->latest('signed_in_at')->limit(20)->get() as $h)
+                        @foreach(\App\Models\AccessHistory::where('user_id', Auth::user()->id)->latest('signed_in_at')->limit(20)->get() as $h)
                             <tr>
                                 <td>{{ $h->signed_in_at }}</td>
                                 <td>{{ $h->signed_out_at ?? '—' }}</td>
@@ -120,30 +128,37 @@
 </div>
 </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const modal = document.getElementById('profile-modal');
-            if (!modal) return;
-            const openers = document.querySelectorAll('[data-open-profile]');
-            const closers = modal.querySelectorAll('[data-close-profile]');
-            const backdrop = modal.querySelector('.sheet-backdrop');
-            const tabs = modal.querySelectorAll('.tab-btn');
-            const panes = modal.querySelectorAll('.tab-pane');
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('profile-modal');
+        if (!modal) return;
+        const openers = document.querySelectorAll('[data-open-profile]');
+        const closers = modal.querySelectorAll('[data-close-profile]');
+        const backdrop = modal.querySelector('.sheet-backdrop');
+        const tabs = modal.querySelectorAll('.tab-btn');
+        const panes = modal.querySelectorAll('.tab-pane');
 
-            const open = e => { e?.preventDefault(); modal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; };
-            const close = () => { modal.setAttribute('aria-hidden','true'); document.body.style.overflow=''; };
+        const open = e => {
+            e?.preventDefault();
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        };
+        const close = () => {
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        };
 
-            openers.forEach(b => b.addEventListener('click', open));
-            closers.forEach(b => b.addEventListener('click', close));
-            backdrop?.addEventListener('click', close);
-            document.addEventListener('keydown', e => (e.key === 'Escape' && modal.getAttribute('aria-hidden') === 'false') && close());
+        openers.forEach(b => b.addEventListener('click', open));
+        closers.forEach(b => b.addEventListener('click', close));
+        backdrop?.addEventListener('click', close);
+        document.addEventListener('keydown', e => (e.key === 'Escape' && modal.getAttribute('aria-hidden') === 'false') && close());
 
-            tabs.forEach(btn => btn.addEventListener('click', () => {
-                tabs.forEach(b => b.classList.remove('is-active'));
-                panes.forEach(p => p.classList.remove('is-active'));
-                btn.classList.add('is-active');
-                modal.querySelector('#tab-' + btn.dataset.tab).classList.add('is-active');
-            }));
-        });
-    </script>
+        tabs.forEach(btn => btn.addEventListener('click', () => {
+            tabs.forEach(b => b.classList.remove('is-active'));
+            panes.forEach(p => p.classList.remove('is-active'));
+            btn.classList.add('is-active');
+            modal.querySelector('#tab-' + btn.dataset.tab).classList.add('is-active');
+        }));
+    });
+</script>
 

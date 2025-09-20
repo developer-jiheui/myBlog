@@ -19,13 +19,13 @@
             <div class="blog-header">
                 <div class="blog-category">
                     {{--                    TODO : categories of blog--}}
-                    <p class=filter-item>
+                    {{--                    <p class=filter-item>--}}
                 </div>
                 <div class="blog-btn-container">
                     @auth
-                        @if(Auth::user()->USER_TYPE==0&&Auth::user()->id==$blogItem['user_id'])
+                        @if(Auth::user()->user_type==0&&Auth::user()->id==$blogItem['user_id'])
                             <div class=project-buttons>
-                                <a class="icon-box" href="{{route('edit.blog', ['id' => $blogItem['blog_id']])}}">
+                                <a class="icon-box" href="{{route('edit.blog', ['id' => $blogItem['id']])}}">
                                     <ion-icon name="pencil-outline" role="img" class="md hydrated"
                                               aria-label="Edit"></ion-icon>
                                 </a>

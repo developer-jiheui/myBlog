@@ -11,7 +11,7 @@
 
         $user = Auth::user();
 
-        if (!$user || ($isEdit && $user->user_id !== $blogItem->user_id) || (!$isEdit && $user->user_type != 0)) {
+        if (!$user || ($isEdit && $user->id !== $blogItem->user_id) || (!$isEdit && $user->user_type != 0)) {
             abort(403); // Forbidden
         }
     @endphp
@@ -23,33 +23,27 @@
             </h2>
         </header>
 
-        <form class="form"
+        <form id="blog-form"
+              class="form"
               action="{{ $isEdit ? route('edit.blog.update', ['id' => $blogItem->id]) : route('edit.blog.create') }}"
-              method="post"
-              enctype="multipart/form-data">
+              method="post" enctype="multipart/form-data">
             @csrf
             @if($isEdit)
                 @method('patch')
-            @else
-                @method('post')
             @endif
 
             <div class="input-wrapper">
                 <label for="title" class="form-label">Title</label>
-                <input name="title" id="title" class="form-input" value="{{ $blogItem['title'] ?? '' }}" required>
+                <input name="title" id="title" class="form-input"
+                       value="{{ old('title', $blogItem->title ?? '') }}" required>
             </div>
 
-            <!-- Hidden input to hold HTML content -->
-            <input type="hidden" name="content" id="hidden-content">
+            <input type="hidden" name="contents" id="hidden-contents">
+            <div id="editor" style="height:300px;"></div>
 
-            <!-- Editor mount point -->
-            <div id="editor" style="height: 300px;"></div>
-
-            <div>
-                <button type="submit" class="form-btn" style="margin-right:auto;">
-                    {{ $isEdit ? 'Save Item' : 'Add Item' }}
-                </button>
-            </div>
+            <button type="submit" class="form-btn" style="margin-right:auto;">
+                {{ $isEdit ? 'Save Item' : 'Add Item' }}
+            </button>
         </form>
 
         <!-- Quill Styles & Scripts -->
@@ -88,7 +82,8 @@
             });
 
             // Load existing content if editing
-            quill.root.innerHTML = `{!! addslashes($blogItem['contents'] ?? '') !!}`;
+            {{--quill.root.innerHTML = `{!! addslashes($blogItem['contents'] ?? '') !!}`;--}}
+                quill.root.innerHTML = {!! json_encode(old('contents', $blogItem->contents ?? '')) !!};
 
             // Custom image upload + resize
             quill.getModule('toolbar').addHandler('image', () => {
@@ -109,9 +104,9 @@
             });
 
             // Set content in hidden input on form submit
-            document.querySelector('form').onsubmit = function () {
-                document.getElementById('hidden-content').value = quill.root.innerHTML;
-            };
+            document.getElementById('blog-form').addEventListener('submit', function () {
+                document.getElementById('hidden-contents').value = quill.root.innerHTML.trim();
+            });
         </script>
     </article>
 @endsection
