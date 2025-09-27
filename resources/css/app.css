@@ -1200,6 +1200,10 @@ div.project-interact { /* for admin; icons display on top of each other otherwis
     color: var(--white-2);
 }
 
+.project-description > p > img {
+    max-width: 100%;
+}
+
 .project-full-img {
     margin: 1em 0;
     max-width: 100%;

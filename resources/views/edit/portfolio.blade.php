@@ -11,7 +11,7 @@
         }
         else {
             $item = [];
-            if (Auth::user()===null||Auth::user()->USER_TYPE!=0) {
+            if (Auth::user()===null||Auth::user()->user_type!=0) {
                 http_response_code(304);
                 die();
             }
@@ -30,14 +30,14 @@
         </header>
         <form class=form
               action="{{isset($_GET['id'])?route('edit.portfolio.update', ['id'=>$_GET['id']]):route('edit.portfolio.create')}}"
-              method=post enctype=multipart/form-data>
+              enctype=multipart/form-data>
             @csrf
             @if(isset($_GET['id']))
                 @method('patch')
             @else
                 @method('post')
             @endif
-            
+
             <div class="input-wrapper">
                 <label for=title class=form-label>Title</label>
                 <input name=title id=title class=form-input value="{{$item['title']??''}}" required>

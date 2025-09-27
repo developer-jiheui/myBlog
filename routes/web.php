@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Auth\AdminController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\TestimonialController;
+use Illuminate\Support\Facades\Cache;
 
 
 use Illuminate\Support\Facades\Mail;
@@ -137,7 +138,7 @@ Route::middleware(['auth'])->get('/edit/portfolio', function () {
     return view('edit.portfolio');
 })->name('edit.portfolio');
 Route::middleware(['auth'])->delete('/edit/portfolio/delete', 'App\Http\Controllers\PortfolioController@delete')->name('edit.portfolio.delete');
-Route::middleware(['auth'])->patch('/edit/portfolio/update', 'App\Http\Controllers\PortfolioController@edit')->name('edit.portfolio.update');
+Route::middleware(['auth'])->patch('/edit/portfolio/update', 'App\Http\Controllers\PortfolioController@update')->name('edit.portfolio.update');
 Route::middleware(['auth'])->post('/edit/portfolio/create', 'App\Http\Controllers\PortfolioController@create')->name('edit.portfolio.create');
 Route::middleware(['auth'])->post('/portfolio/like', 'App\Http\Controllers\PortfolioController@like')->name('page.portfolio.like');
 
@@ -189,3 +190,17 @@ Route::post('/guest-login', function () {
     return redirect()->route('page.show', ['name' => 'home'])
         ->with('success', 'You are logged in as a guest!');
 })->name('guest.login');
+
+
+//TEST
+// routes/web.php (temporary)
+Route::get('/debug-env', function () {
+    return [
+        'token_present' => (bool)config('services.notion.token'),
+        'db_present' => (bool)config('services.notion.portfolio_db'),
+    ];
+});
+
+Route::get('/debug-cache-flush', fn() => tap(Cache::forget('notion.portfolio.projects'), fn() => 'ok'));
+
+Route::get('/p', [PortfolioController::class, 'notion'])->name('portfolio.notion');

@@ -7,9 +7,18 @@ use App\Models\Like;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Services\NotionPortfolio;
 
 class PortfolioController extends Controller
 {
+    //TEST
+    public function notion(NotionPortfolio $notion)
+    {
+        $projects = $notion->listProjects();
+        return view('pages.portfolio', compact('projects'));
+    }
+
+
     // List page: precompute liked_by_me + likes_count (no N+1)
     public function index(Request $request, ?string $slug = null)
     {

@@ -31,4 +31,8 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'notion' => [
+        'token' => env('NOTION_TOKEN'),
+        'portfolio_db' => env('NOTION_DB_PORTFOLIO'),
+    ],
 ];
