@@ -175,37 +175,37 @@
           - clients
         -->
 
-        <section class="recent-works">
-            <h3 class="h3 service-title">Recent works</h3>
+        {{--        <section class="recent-works">--}}
+        {{--            <h3 class="h3 service-title">Recent works</h3>--}}
 
-            <div class="recent-scroll-wrap">
+        {{--            <div class="recent-scroll-wrap">--}}
 
-                <ul class="recent-list has-scrollbar" id="recent-list">
-                    @foreach (\App\Models\Portfolio::latest()->take(12)->get() as $p)
-                        <li class="recent-item">
-                            <a href="{{ route('page.portfoliofull', ['id' => $p->id]) }}" class="recent-card">
-                                <figure class="recent-thumb">
-                                    <img
-                                        src="{{ asset($p->image_url ?? 'images/default-icon.svg') }}"
-                                        alt="{{ $p->title }}"
-                                        loading="lazy"
-                                    >
-                                </figure>
+        {{--                <ul class="recent-list has-scrollbar" id="recent-list">--}}
+        {{--                    @foreach (\App\Models\Portfolio::latest()->take(12)->get() as $p)--}}
+        {{--                        <li class="recent-item">--}}
+        {{--                            <a href="{{ route('page.portfoliofull', ['id' => $p->id]) }}" class="recent-card">--}}
+        {{--                                <figure class="recent-thumb">--}}
+        {{--                                    <img--}}
+        {{--                                        src="{{ asset($p->image_url ?? 'images/default-icon.svg') }}"--}}
+        {{--                                        alt="{{ $p->title }}"--}}
+        {{--                                        loading="lazy"--}}
+        {{--                                    >--}}
+        {{--                                </figure>--}}
 
-                                <div class="recent-body">
-                                    <h4 class="h5 recent-title">{{ $p->title }}</h4>
-                                    <p class="recent-desc">
-                                        {{ \Illuminate\Support\Str::limit(strip_tags($p->description), 80) }}
-                                    </p>
-                                </div>
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
+        {{--                                <div class="recent-body">--}}
+        {{--                                    <h4 class="h5 recent-title">{{ $p->title }}</h4>--}}
+        {{--                                    <p class="recent-desc">--}}
+        {{--                                        {{ \Illuminate\Support\Str::limit(strip_tags($p->description), 80) }}--}}
+        {{--                                    </p>--}}
+        {{--                                </div>--}}
+        {{--                            </a>--}}
+        {{--                        </li>--}}
+        {{--                    @endforeach--}}
+        {{--                </ul>--}}
 
 
-            </div>
-        </section>
+        {{--            </div>--}}
+        {{--        </section>--}}
 
 
     </article>

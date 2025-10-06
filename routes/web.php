@@ -204,3 +204,7 @@ Route::get('/debug-env', function () {
 Route::get('/debug-cache-flush', fn() => tap(Cache::forget('notion.portfolio.projects'), fn() => 'ok'));
 
 Route::get('/p', [PortfolioController::class, 'notion'])->name('portfolio.notion');
+Route::get('/portfolio', [PortfolioController::class, 'notion'])->name('portfolio.notion');
+Route::get('/portfolio/{key}', [PortfolioController::class, 'show'])
+    ->where('key', '[-a-zA-Z0-9_]+')
+    ->name('page.portfoliofull');

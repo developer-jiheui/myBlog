@@ -18,6 +18,20 @@ class PortfolioController extends Controller
         return view('pages.portfolio', compact('projects'));
     }
 
+    public function show(NotionPortfolio $notion, string $key)
+    {
+        $project = $notion->findBySlugOrId($key);
+        abort_unless($project, 404);
+
+        // NEW: pull full page content as HTML
+        $contentHtml = $notion->renderPageHtml($project['id']);
+
+        return view('pages.portfoliofull', [
+            'project' => $project,
+            'contentHtml' => $contentHtml,
+        ]);
+    }
+
 
     // List page: precompute liked_by_me + likes_count (no N+1)
     public function index(Request $request, ?string $slug = null)
@@ -48,7 +62,7 @@ class PortfolioController extends Controller
 
         $portfolios = $query->latest('updated_at')->get();
 
-        return view('pages.portfolio', [
+        return view('pages.portfolios', [
             'portfolios' => $portfolios,
             'activeCat' => $activeCat,
         ]);
