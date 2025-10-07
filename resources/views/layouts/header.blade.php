@@ -39,7 +39,12 @@
         @if (Auth::user()->avatar)
             <img src="{{ asset(Auth::user()->avatar) }}" alt="avatar" width="80">
         @else
-            <img src="{{ asset('images/default-avatar.png') }}" alt="Default avatar" width="80">
+            @if(auth()->user()->user_type == 0)
+                <img src="{{ asset('images/my-avatar.png') }}" alt="Default avatar" width="80">
+            @else
+                <img src="{{ asset('images/default-avatar.png') }}" alt="Default avatar" width="80">
+            @endif
+
         @endif
     </button>
     @include('layouts.user-nav')

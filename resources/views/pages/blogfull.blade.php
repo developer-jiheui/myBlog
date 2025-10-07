@@ -29,7 +29,7 @@
                                     <ion-icon name="pencil-outline" role="img" class="md hydrated"
                                               aria-label="Edit"></ion-icon>
                                 </a>
-                                <form action="{{route('edit.blog.delete', ['id' => $blogItem['blog_id']])}}"
+                                <form action="{{route('edit.blog.delete', ['id' => $blogItem['id']])}}"
                                       method=post>
                                     @csrf
                                     @method('delete')

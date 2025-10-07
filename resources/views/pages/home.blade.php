@@ -103,10 +103,10 @@
           - testimonials
         -->
 
-        <section class="testimonials">
-            <h3 class="h3 testimonials-title">Testimonials</h3>
-            <ul class="testimonials-list has-scrollbar">
-                @forelse($testimonials as $t)
+        @forelse($testimonials as $t)
+            <section class="testimonials">
+                <h3 class="h3 testimonials-title">Testimonials</h3>
+                <ul class="testimonials-list has-scrollbar">
                     <li class="testimonials-item">
                         <div class="content-card" data-testimonials-item
                              data-author-title="{{ $t->author_title ?? '' }}">
@@ -127,15 +127,12 @@
                             </div>
                         </div>
                     </li>
-                @empty
-                    <p>
-                        NO Testimonial yet
-                    </p>
-                @endforelse
-            </ul>
 
-        </section>
+                </ul>
+            </section>
+        @empty
 
+        @endforelse
 
         <!--
           - testimonials modal
