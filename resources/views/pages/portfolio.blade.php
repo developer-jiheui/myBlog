@@ -1,5 +1,7 @@
+{{--            NOTION--}}
 @extends('layouts.main')
 @section('content')
+
     <article class="active" data-page="portfolio">
         <header>
             <h2 class="h2 article-title">Portfolio</h2>
@@ -8,57 +10,79 @@
         @if(empty($projects))
             <p style="color:var(--light-gray);">No projects yet.</p>
         @else
-            <ul class="project-list"
-                style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;">
+            @php
+                // Collect all unique tech tags from projects
+                $allTechs = collect($projects)
+                    ->pluck('tech')        // get the tech arrays
+                    ->flatten()            // flatten into one array
+                    ->unique()             // remove duplicates
+                    ->sort()               // sort alphabetically
+                    ->values();            // reindex
+            @endphp
+                <!-- Filter list-->
+            <ul class="filter-list">
+                <li class="filter-item">
+                    <button data-filter-btn class="active" data-category="all">All</button>
+                </li>
+
+                @foreach($allTechs as $tech)
+                    <li class="filter-item">
+                        <button data-filter-btn data-category="{{ Str::slug($tech) }}">
+                            {{ $tech }}
+                        </button>
+                    </li>
+                @endforeach
+            </ul>
+
+            <!-- PROJECT LIST -->
+            <ul class="project-list">
                 @foreach($projects as $p)
                     <li class="project-item"
-                        style="background:var(--eerie-black-2); border:1px solid var(--jet); border-radius:14px; overflow:hidden;">
-                        <a href="{{ route('page.portfoliofull', ['key' => $p['slug'] ?: $p['id']]) }}"
-                           style="text-decoration:none;">
-                            @if($p['cover'])
-                                <div style="aspect-ratio: 16/9; background:#111; overflow:hidden;">
-                                    <img src="{{ $p['cover'] }}" alt="{{ $p['name'] }}"
-                                         style="width:100%; height:100%; object-fit:cover; display:block;">
+                        data-filter-item
+                        data-category="{{ collect($p['tech'])->map(fn($t) => Str::slug($t))->implode(' ') }}"><a
+                            href="{{ route('page.portfoliofull', ['key' => $p['slug'] ?: $p['id']]) }}">
+                            <figure class="project-img">
+                                <div class="project-item-icon-box">
+                                    <ion-icon name="eye-outline" role="img" class="md hydrated"
+                                              aria-label="eye outline"></ion-icon>
                                 </div>
-                            @endif
-                            <div style="padding:14px;">
-                                <h3 class="project-title"
-                                    style="color:var(--white-2); font-size:1.05rem; margin:0 0 .4rem;">
-                                    {{ $p['name'] }}
-                                </h3>
-                                @if($p['summary'])
-                                    <p style="color:var(--light-gray); font-size:.95rem; line-height:1.35; margin:0 0 .6rem;">
-                                        {{ $p['summary'] }}
-                                    </p>
-                                @endif
+                                <img src="{{ $p['cover']?? '/images/default-blog.jpg' }}" alt="{{ $p['name'] }}"
+                                     loading="lazy">
+                            </figure>
+                            <div class="project-content">
+                                <div class="project-header">
+                                    <h3 class="project-title">{{ $p['name'] }}</h3>
+                                    <div class="project-icons">
+                                        @if($p['github'])
+                                            <div class="social-item">
+                                                <a href="{{ $p['github'] }}" class="social-link" target="_blank"
+                                                   rel="noopener">
+                                                    <ion-icon name="logo-github"></ion-icon>
+                                                </a>
+                                            </div>
+                                        @endif
+                                        @if($p['url'])
+                                            <div class="social-item">
+                                                <a href="{{ $p['url'] }}" class="social-link" target="_blank"
+                                                   rel="noopener">
+                                                    <ion-icon name="link-outline"></ion-icon>
+                                                </a>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
 
                                 @if(!empty($p['tech']))
-                                    <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:.6rem;">
+                                    <div class="project-techs">
                                         @foreach($p['tech'] as $tag)
-                                            <span
-                                                style="font-size:.8rem; padding:.2rem .5rem; border:1px solid var(--jet); border-radius:999px; color:var(--white-2);">
-                      {{ $tag }}
-                    </span>
+                                            <span class="project-tech">
+                                            {{ $tag }}
+                                        </span>
                                         @endforeach
                                     </div>
                                 @endif
 
-                                <div style="display:flex; gap:10px; align-items:center;">
-                                    @if($p['url'])
-                                        <a href="{{ $p['url'] }}" target="_blank" class="btn"
-                                           style="font-size:.9rem; color:var(--orange-yellow-crayola);">Live</a>
-                                    @endif
-                                    @if($p['github'])
-                                        <a href="{{ $p['github'] }}" target="_blank" class="btn"
-                                           style="font-size:.9rem; color:var(--orange-yellow-crayola);">GitHub</a>
-                                    @endif
-                                    @if($p['date'])
-                                        <span
-                                            style="margin-left:auto; font-size:.8rem; color:var(--smoky-black); opacity:.8;">
-                    {{ \Illuminate\Support\Carbon::parse($p['date'])->format('Y-m-d') }}
-                  </span>
-                                    @endif
-                                </div>
+                                <p class="project-desc">{{ $p['summary'] ?? ''}}</p>
                             </div>
                         </a>
                     </li>

@@ -4,7 +4,6 @@
         // Pull super admin (USER_TYPE = 0 ) and recent content
         $superAdmin = \App\Models\User::where('USER_TYPE', 0)->first();
         $latestBlogs = \App\Models\Blog::orderByDesc('CREATED_AT')->limit(3)->get();
-        $recentWorks = \App\Models\Portfolio::orderByDesc('UPDATED_AT')->limit(6)->get();
         $testimonials = \App\Models\Testimonial::where('pinned',1)->get();
     @endphp
 
@@ -104,10 +103,10 @@
           - testimonials
         -->
 
-        <section class="testimonials">
-            <h3 class="h3 testimonials-title">Testimonials</h3>
-            <ul class="testimonials-list has-scrollbar">
-                @forelse($testimonials as $t)
+        @forelse($testimonials as $t)
+            <section class="testimonials">
+                <h3 class="h3 testimonials-title">Testimonials</h3>
+                <ul class="testimonials-list has-scrollbar">
                     <li class="testimonials-item">
                         <div class="content-card" data-testimonials-item
                              data-author-title="{{ $t->author_title ?? '' }}">
@@ -128,15 +127,12 @@
                             </div>
                         </div>
                     </li>
-                @empty
-                    <p>
-                        NO Testimonial yet
-                    </p>
-                @endforelse
-            </ul>
 
-        </section>
+                </ul>
+            </section>
+        @empty
 
+        @endforelse
 
         <!--
           - testimonials modal
@@ -172,40 +168,44 @@
 
 
         <!--
-          - clients
+          - portfolios
         -->
 
-        {{--        <section class="recent-works">--}}
-        {{--            <h3 class="h3 service-title">Recent works</h3>--}}
+        @if(isset($projects) && count($projects))
 
-        {{--            <div class="recent-scroll-wrap">--}}
+            <section class="recent-works">
+                <h3 class="h3 service-title">Recent works</h3>
 
-        {{--                <ul class="recent-list has-scrollbar" id="recent-list">--}}
-        {{--                    @foreach (\App\Models\Portfolio::latest()->take(12)->get() as $p)--}}
-        {{--                        <li class="recent-item">--}}
-        {{--                            <a href="{{ route('page.portfoliofull', ['id' => $p->id]) }}" class="recent-card">--}}
-        {{--                                <figure class="recent-thumb">--}}
-        {{--                                    <img--}}
-        {{--                                        src="{{ asset($p->image_url ?? 'images/default-icon.svg') }}"--}}
-        {{--                                        alt="{{ $p->title }}"--}}
-        {{--                                        loading="lazy"--}}
-        {{--                                    >--}}
-        {{--                                </figure>--}}
+                <div class="recent-scroll-wrap">
 
-        {{--                                <div class="recent-body">--}}
-        {{--                                    <h4 class="h5 recent-title">{{ $p->title }}</h4>--}}
-        {{--                                    <p class="recent-desc">--}}
-        {{--                                        {{ \Illuminate\Support\Str::limit(strip_tags($p->description), 80) }}--}}
-        {{--                                    </p>--}}
-        {{--                                </div>--}}
-        {{--                            </a>--}}
-        {{--                        </li>--}}
-        {{--                    @endforeach--}}
-        {{--                </ul>--}}
+                    <ul class="recent-list has-scrollbar" id="recent-list">
+                        @foreach ($projects as $p)
+                            <li class="recent-item">
+                                <a href="{{ route('page.portfoliofull', ['key' => $p['slug'] ?: $p['id']]) }}"
+                                   class="recent-card">
+                                    <figure class="recent-thumb">
+                                        <img
+                                            src="{{ asset($p['cover'] ?? 'images/default-icon.svg') }}"
+                                            alt="{{  $p['name']}}"
+                                            loading="lazy"
+                                        >
+                                    </figure>
+
+                                    <div class="recent-body">
+                                        <h4 class="h5 recent-title">{{ $p['name'] }}</h4>
+                                        <p class="recent-desc">
+                                            {{ \Illuminate\Support\Str::limit(strip_tags($p['summary']), 80) }}
+                                        </p>
+                                    </div>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
 
 
-        {{--            </div>--}}
-        {{--        </section>--}}
+                </div>
+            </section>
+        @endif
 
 
     </article>

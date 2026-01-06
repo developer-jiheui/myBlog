@@ -52,6 +52,9 @@ class NotionPortfolio
                 $slug = $this->plainText($props['Slug']['rich_text'] ?? []) ?: Str::slug($name);
                 $summary = $this->plainText($props['Summary']['rich_text'] ?? []);
                 $url = $props['URL']['url'] ?? null;
+                if ($url && !preg_match('#^https?://#', $url)) {
+                    $url = 'https://' . $url;
+                }
                 $github = $props['GitHub']['url'] ?? null;
                 $date = $props['Date']['date']['start'] ?? null;
                 $tech = array_map(fn($t) => $t['name'], $props['Tech']['multi_select'] ?? []);
@@ -60,6 +63,11 @@ class NotionPortfolio
                 $cover = $this->firstFileUrl($props['Cover']['files'] ?? [])
                     ?: ($page['cover']['external']['url'] ?? $page['cover']['file']['url'] ?? null);
 
+                //TODO save image locally
+//                $remoteCover = $this->firstFileUrl($props['Cover']['files'] ?? [])
+//                    ?: ($page['cover']['external']['url'] ?? $page['cover']['file']['url'] ?? null);
+//
+//                $cover = $remoteCover ? $this->cacheImageLocally($remoteCover) : null;
                 $items[] = [
                     'id' => $page['id'],
                     'name' => $name,
@@ -316,5 +324,36 @@ class NotionPortfolio
         $html = preg_replace('#</ol>\s*<ol>#', '', $html);
 
         return $html;
+    }
+
+    private function cacheImageLocally(string $url): ?string
+    {
+        try {
+            $contents = @file_get_contents($url);
+            if (!$contents) {
+                return null;
+            }
+
+            // Get file extension or fallback
+            $ext = 'jpg';
+            if (preg_match('/\.(jpe?g|png|gif|webp|bmp|svg)(?:\?|$)/i', $url, $m)) {
+                $ext = strtolower($m[1]);
+            }
+
+            // Unique name from URL hash
+            $filename = 'notion_' . md5($url) . '.' . $ext;
+            $path = "notion-images/{$filename}";
+
+            // Skip re-download if already cached
+            if (!\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->put($path, $contents);
+            }
+
+            // Return local public URL (e.g. /storage/notion-images/xxx.jpg)
+            return \Illuminate\Support\Facades\Storage::url($path);
+
+        } catch (\Throwable $e) {
+            return null;
+        }
     }
 }

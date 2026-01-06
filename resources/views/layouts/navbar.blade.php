@@ -8,8 +8,8 @@
             </li>
 
             <li class="navbar-item">
-                <a href="{{ route('portfolio.index') }}"
-                   class="navbar-link {{ (request()->routeIs('portfolio.index')) ? 'active' : '' }}"
+                <a href="{{ route('portfolio.notion') }}"
+                   class="navbar-link {{ (request()->routeIs('portfolio.notion')) ? 'active' : '' }}"
                    data-nav-link>Portfolio</a>
             </li>
 

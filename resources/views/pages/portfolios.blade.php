@@ -41,7 +41,7 @@
                             ->orderBy('position')
                             ->value('url');
 
-                        $imgUrl = $cover ?: ($p->image_url ?: '/images/default-blog.jpeg');
+                        $imgUrl = $cover ?: ($p->image_url ?: '/images/default-blog.jpg');
 
                     @endphp
 

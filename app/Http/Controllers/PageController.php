@@ -4,18 +4,29 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use App\Services\NotionPortfolio;
 
 class PageController extends Controller
 {
+    protected NotionPortfolio $notion;
+
+    public function __construct(NotionPortfolio $notion)
+    {
+        $this->notion = $notion;
+    }
+
     public function show($name)
     {
-        // List of allowed pages (to prevent errors or unwanted access)
         $pages = ['home', 'bio', 'resume', 'experience', 'portfoliofull', 'blog', 'login', 'register', 'blogfull', 'contact'];
         $admin_pages = ['admin'];
         $user_pages = ['profile', 'history'];
         $superAdmin = \App\Models\User::find(1);
 
+        // ✅ Special logic for home page with Notion data
+        if ($name === 'home') {
+            $projects = $this->notion->listProjects();  // Grab Notion portfolio items
+            return view('pages.home', compact('superAdmin', 'projects'));
+        }
 
         if (in_array($name, $pages)) {
             return view('pages.' . $name, compact('superAdmin'));

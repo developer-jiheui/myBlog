@@ -183,3 +183,18 @@ if (document.readyState === 'loading') {
 } else {
     initModals();
 }
+
+
+const filterButtons = document.querySelectorAll('[data-filter-btn]');
+const projectItems = document.querySelectorAll('[data-filter-item]');
+
+filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const category = btn.dataset.category;
+
+        projectItems.forEach(item => {
+            const itemCategories = item.dataset.category.split(' ');
+            item.hidden = !(category === 'all' || itemCategories.includes(category));
+        });
+    });
+});

@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Testimonial;
 use App\Models\AccessHistory;
+use Illuminate\Support\Facades\File;
 
 class User extends Authenticatable
 {
@@ -62,11 +63,35 @@ class User extends Authenticatable
 
     public function getAuthPassword()
     {
-        return $this->password; // <-- was broken in your snippet
+        return $this->password;
     }
 
     public function getAuthIdentifierName()
     {
         return 'email'; // login by email
+    }
+
+    /**
+     * Get a random avatar path from /public/images/avatars
+     *
+     * @return string
+     */
+    public static function randomAvatar(): string
+    {
+        $avatarDir = public_path('images/avatars');
+        $default = 'images/default-avatar.png';
+
+        if (!File::exists($avatarDir)) {
+            return $default;
+        }
+
+        $avatars = File::files($avatarDir);
+        if (empty($avatars)) {
+            return $default;
+        }
+
+        // pick a random one and return its relative path
+        $randomFile = $avatars[array_rand($avatars)];
+        return 'images/avatars/' . basename($randomFile->getFilename());
     }
 }

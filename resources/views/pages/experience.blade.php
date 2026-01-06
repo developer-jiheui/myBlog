@@ -23,7 +23,8 @@
                     {{ $superAdmin->BIO ?? 'I build fast, modern web apps and elegant UI.' }}
                 </p>
                 <div class="hero-actions" style="display:flex;gap:.6rem;flex-wrap:wrap;">
-                    <a href="{{ route('page.show',['name'=>'portfolio']) }}" class="form-btn login-highlight">View Portfolio</a>
+                    <a href="{{ route('page.show',['name'=>'portfolio']) }}" class="form-btn login-highlight">View
+                        Portfolio</a>
                     <a href="{{ route('page.show',['name'=>'blog']) }}" class="form-btn">Read Blog</a>
                     <a href="{{ route('page.show',['name'=>'contact']) }}" class="form-btn">Contact</a>
                 </div>
@@ -42,17 +43,21 @@
         <section class="service">
             <h3 class="h3 service-title">Latest Blogs</h3>
 
-            <ul class="service-list" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;">
+            <ul class="service-list"
+                style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;">
                 @forelse ($latestBlogs as $post)
                     <li class="service-item">
-                        <a href="{{ route('page.blogfull', ['id'=>$post['BLOG_ID']]) }}" class="service-link" style="display:flex;gap:16px;">
+                        <a href="{{ route('page.blogfull', ['id'=>$post['BLOG_ID']]) }}" class="service-link"
+                           style="display:flex;gap:16px;">
                             <div class="service-icon-box" style="align-self:flex-start;">
                                 <img
-                                    src="{{ asset($post['IMAGE_URL'] ?: 'images/default-blog.jpeg') }}"
-                                    alt="blog thumbnail" width="56" height="56" style="object-fit:cover;border-radius:12px;">
+                                    src="{{ asset($post['IMAGE_URL'] ?: 'images/default-blog.jpg') }}"
+                                    alt="blog thumbnail" width="56" height="56"
+                                    style="object-fit:cover;border-radius:12px;">
                             </div>
                             <div class="service-content-box">
-                                <h4 class="h4 service-item-title" style="margin-bottom:.25rem;">{{ $post['TITLE'] }}</h4>
+                                <h4 class="h4 service-item-title"
+                                    style="margin-bottom:.25rem;">{{ $post['TITLE'] }}</h4>
                                 <p class="blog-meta" style="opacity:.7;margin-bottom:.5rem;">
                                     {{ \Carbon\Carbon::parse($post['CREATED_AT'])->format('M d, Y') }}
                                 </p>
@@ -63,7 +68,9 @@
                         </a>
                     </li>
                 @empty
-                    <li class="service-item"><div class="service-content-box">No posts yet.</div></li>
+                    <li class="service-item">
+                        <div class="service-content-box">No posts yet.</div>
+                    </li>
                 @endforelse
             </ul>
 
@@ -78,17 +85,20 @@
         <section class="service">
             <h3 class="h3 service-title">Recent Works</h3>
 
-            <ul class="service-list has-scrollbar" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;">
+            <ul class="service-list has-scrollbar"
+                style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;">
                 @forelse ($recentWorks as $work)
                     <li class="service-item">
-                        <a href="{{ route('page.portfoliofull', ['id'=>$work['PORTFOLIO_ID']]) }}" class="service-link" style="display:flex;gap:16px;">
+                        <a href="{{ route('page.portfoliofull', ['id'=>$work['PORTFOLIO_ID']]) }}" class="service-link"
+                           style="display:flex;gap:16px;">
                             <div class="service-icon-box" style="align-self:flex-start;">
                                 <img
                                     src="{{ asset($work['IMAGE_URL'] ?: 'images/default-icon.svg') }}"
                                     alt="project" width="56" height="56" style="object-fit:cover;border-radius:12px;">
                             </div>
                             <div class="service-content-box">
-                                <h4 class="h4 service-item-title" style="margin-bottom:.25rem;">{{ $work['TITLE'] }}</h4>
+                                <h4 class="h4 service-item-title"
+                                    style="margin-bottom:.25rem;">{{ $work['TITLE'] }}</h4>
                                 <p class="service-item-text">
                                     {{ \Illuminate\Support\Str::limit($work['DESCRIPTION'] ?? '', 120) }}
                                 </p>
@@ -96,7 +106,9 @@
                         </a>
                     </li>
                 @empty
-                    <li class="service-item"><div class="service-content-box">No portfolio items yet.</div></li>
+                    <li class="service-item">
+                        <div class="service-content-box">No portfolio items yet.</div>
+                    </li>
                 @endforelse
             </ul>
 
