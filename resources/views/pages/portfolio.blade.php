@@ -33,30 +33,6 @@
                     </li>
                 @endforeach
             </ul>
-            <div class="filter-select-box">
-                <button class="filter-select" data-select="">
-                    <div class="select-value" data-selecct-value="">Web</div>
-
-                    <div class="select-icon">
-                        <ion-icon name="chevron-down" role="img" class="md hydrated"
-                                  aria-label="chevron down"></ion-icon>
-                    </div>
-                </button>
-
-                <ul class="select-list">
-                    <li class="select-item">
-                        <button data-select-item data-category="all">All</button>
-                    </li>
-
-                    @foreach($allTechs as $tech)
-                        <li class="select-item">
-                            <button data-select-item data-category="{{ Str::slug($tech) }}">
-                                {{ $tech }}
-                            </button>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
 
             <!-- PROJECT LIST -->
             <ul class="project-list">
